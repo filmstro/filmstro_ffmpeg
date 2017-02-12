@@ -135,11 +135,6 @@ void FFmpegVideoReader::removeVideoListener (FFmpegVideoListener* listener)
     decoder.removeVideoListener (listener);
 }
 
-Image& FFmpegVideoReader::getLastVideoFrame ()
-{
-    return decoder.getOutputImage();
-}
-
 int FFmpegVideoReader::getVideoWidth () const
 {
     return decoder.getVideoWidth();
@@ -589,11 +584,6 @@ void FFmpegVideoReader::DecoderThread::setCurrentPTS (const double pts, bool see
 double FFmpegVideoReader::DecoderThread::getCurrentPTS () const
 {
     return currentPTS;
-}
-
-juce::Image& FFmpegVideoReader::DecoderThread::getOutputImage ()
-{
-    return outputImage;
 }
 
 int FFmpegVideoReader::DecoderThread::getVideoWidth () const

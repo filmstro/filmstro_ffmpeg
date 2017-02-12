@@ -93,9 +93,6 @@ public:
         /** returns the presentation timestamp the video is synchronised to */
         double getCurrentPTS () const;
 
-        /** fetch the last decoded frame to display */
-        juce::Image& getOutputImage ();
-
         /** get the width of the video images according to decoder */
         int getVideoWidth () const;
 
@@ -162,8 +159,6 @@ public:
 
         AVFrame*            audioFrame;
 
-        juce::Image         outputImage;
-
         std::atomic<double> currentPTS;
 
         juce::ListenerList<FFmpegVideoListener> videoListeners;
@@ -212,9 +207,6 @@ public:
     void removeVideoListener (FFmpegVideoListener* listener);
 
     double getLastVideoPTS () const;
-
-    /** copies the last decoded frame into image */
-    juce::Image& getLastVideoFrame ();
 
     /** get the width of the video images according to decoder */
     int getVideoWidth () const;

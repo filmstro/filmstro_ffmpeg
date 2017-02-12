@@ -37,11 +37,11 @@
 Component* createMainContentComponent();
 
 //==============================================================================
-class VideoLibTestApplication  : public JUCEApplication
+class VideoPlayerApplication  : public JUCEApplication
 {
 public:
     //==============================================================================
-    VideoLibTestApplication() {}
+    VideoPlayerApplication() {}
 
     const String getApplicationName() override       { return ProjectInfo::projectName; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
@@ -122,4 +122,4 @@ private:
 
 //==============================================================================
 // This macro generates the main() routine that launches the app.
-START_JUCE_APPLICATION (VideoLibTestApplication)
+START_JUCE_APPLICATION (VideoPlayerApplication)

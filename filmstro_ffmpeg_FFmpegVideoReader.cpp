@@ -321,6 +321,8 @@ bool FFmpegVideoReader::DecoderThread::loadMovieFile (const juce::File& inputFil
                                                                      videoContext->pix_fmt);
     }
 
+    videoListeners.call (&FFmpegVideoListener::videoFileChanged, inputFile);
+
     startThread ();
 
     return true;

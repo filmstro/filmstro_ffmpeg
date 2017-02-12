@@ -71,8 +71,11 @@ public:
     /** This is called whenever the size changed, so a framebuffer can be resized */
     void videoSizeChanged (const int width, const int height, const AVPixelFormat) override;
 
-    /** Set a video source for the component. A FFmpegReader is e.g. a FFmpegVideoSource. */
+    /** Set a video source for the component */
     void setVideoReader (FFmpegVideoReader* source);
+
+    /** Get the video source for the component */
+    FFmpegVideoReader* getVideoReader () const;
 
     /** Turn the display of the OSD on and off */
     void setShowOSD (const bool shouldShowOSD);

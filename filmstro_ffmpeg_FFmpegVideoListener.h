@@ -64,6 +64,9 @@ public:
      presentation timestamp PTS as raw frame */
     virtual void displayNewFrame (const AVFrame*) {}
 
+    /** This is called when the video source file has changed */
+    virtual void videoFileChanged (const juce::File& newSource) {}
+
 };
 
 #endif /* FILMSTRO_FFMPEG_FFMPEGVIDEOLISTENER_H_INCLUDED */

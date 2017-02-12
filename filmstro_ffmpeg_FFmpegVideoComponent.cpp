@@ -157,6 +157,11 @@ void FFmpegVideoComponent::setVideoReader (FFmpegVideoReader* source)
     dirty = true;
 }
 
+FFmpegVideoReader* FFmpegVideoComponent::getVideoReader () const
+{
+    return videoSource;
+}
+
 void FFmpegVideoComponent::setShowOSD (const bool shouldShowOSD)
 {
     showOSD = shouldShowOSD;

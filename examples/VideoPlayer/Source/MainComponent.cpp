@@ -36,6 +36,35 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+//==============================================================================
+/*
+ This component lives inside our window, and this is where you should put all
+ your controls and content.
+ */
+class VideoComponentWithDropper :   public FFmpegVideoComponent,
+                                    public FileDragAndDropTarget
+{
+public:
+    VideoComponentWithDropper (FFmpegVideoReader* readerToOpenFiles)
+    {
+        setVideoReader (readerToOpenFiles);
+    }
+
+    virtual ~VideoComponentWithDropper () {}
+
+    bool isInterestedInFileDrag (const StringArray &files) override
+    {
+        return true;
+    }
+
+    void filesDropped (const StringArray &files, int x, int y) override
+    {
+        if (FFmpegVideoReader* reader = getVideoReader()) {
+            File fileToOpen (files [0]);
+            reader->loadMovieFile (fileToOpen);
+        }
+    }
+};
 
 //==============================================================================
 /*
@@ -88,8 +117,7 @@ public:
         transportSource = new AudioTransportSource ();
         transportSource->setSource (videoReader, 0, nullptr);
 
-        videoComponent = new FFmpegVideoComponent();
-        videoComponent->setVideoReader (videoReader);
+        videoComponent = new VideoComponentWithDropper (videoReader);
         addAndMakeVisible (videoComponent);
 
         seekBar = new Slider (Slider::LinearHorizontal, Slider::NoTextBox);
@@ -161,34 +189,6 @@ public:
                 videoFileName->setText (video.getFullPathName(), dontSendNotification);
                 videoReader->loadMovieFile (video);
 
-                String abbrev (video.getFullPathName());
-                if (abbrev.length() > 30)
-                    abbrev = "(...)" + abbrev.substring (abbrev.length() - 30);
-                DBG ("====================================================");
-                DBG ("Loaded file :   " + abbrev);
-                DBG ("Channels:          " + String (videoReader->getVideoChannels()));
-                DBG ("Duration (sec):    " + String (videoReader->getVideoDuration()));
-                DBG ("Framerate (1/sec): " + String (videoReader->getFramesPerSecond()));
-                DBG ("SampleRate:        " + String (videoReader->getVideoSamplingRate()));
-                DBG ("SampleFormat:      " + String (av_get_sample_fmt_name (videoReader->getSampleFormat())));
-                DBG ("Width:             " + String (videoReader->getVideoWidth()));
-                DBG ("Height:            " + String (videoReader->getVideoHeight()));
-                DBG ("Pixel format:      " + String (av_get_pix_fmt_name (videoReader->getPixelFormat())));
-                DBG ("Pixel aspect ratio:" + String (videoReader->getVideoPixelAspect()));
-                DBG ("====================================================");
-
-                seekBar->setRange (0.0, videoReader->getVideoDuration ());
-
-                transportSource->setSource (videoReader, 0, nullptr, videoReader->getVideoSamplingRate(), videoReader->getVideoChannels());
-
-                videoAspectRatio = videoReader->getVideoAspectRatio ();
-                resized ();
-
-                if (AudioIODevice* device = deviceManager.getCurrentAudioDevice()) {
-                    videoReader->prepareToPlay (device->getCurrentBufferSizeSamples(),
-                                                device->getCurrentSampleRate());
-
-                }
             }
         }
         else if (b == play) {
@@ -204,6 +204,39 @@ public:
         else if (b == osd) {
             videoComponent->setShowOSD (osd->getToggleState());
             seekBar->setVisible (osd->getToggleState());
+        }
+    }
+
+    /** Reset gui when a new file is loaded */
+    void videoFileChanged (const juce::File& video) override
+    {
+        String abbrev (video.getFullPathName());
+        if (abbrev.length() > 30)
+            abbrev = "(...)" + abbrev.substring (abbrev.length() - 30);
+        DBG ("====================================================");
+        DBG ("Loaded file :   " + abbrev);
+        DBG ("Channels:          " + String (videoReader->getVideoChannels()));
+        DBG ("Duration (sec):    " + String (videoReader->getVideoDuration()));
+        DBG ("Framerate (1/sec): " + String (videoReader->getFramesPerSecond()));
+        DBG ("SampleRate:        " + String (videoReader->getVideoSamplingRate()));
+        DBG ("SampleFormat:      " + String (av_get_sample_fmt_name (videoReader->getSampleFormat())));
+        DBG ("Width:             " + String (videoReader->getVideoWidth()));
+        DBG ("Height:            " + String (videoReader->getVideoHeight()));
+        DBG ("Pixel format:      " + String (av_get_pix_fmt_name (videoReader->getPixelFormat())));
+        DBG ("Pixel aspect ratio:" + String (videoReader->getVideoPixelAspect()));
+        DBG ("====================================================");
+
+        seekBar->setRange (0.0, videoReader->getVideoDuration ());
+
+        transportSource->setSource (videoReader, 0, nullptr, videoReader->getVideoSamplingRate(), videoReader->getVideoChannels());
+
+        videoAspectRatio = videoReader->getVideoAspectRatio ();
+        resized ();
+
+        if (AudioIODevice* device = deviceManager.getCurrentAudioDevice()) {
+            videoReader->prepareToPlay (device->getCurrentBufferSizeSamples(),
+                                        device->getCurrentSampleRate());
+
         }
     }
 
@@ -257,7 +290,7 @@ private:
     ScopedPointer<TextButton>           stop;
     ScopedPointer<TextButton>           osd;
     ScopedPointer<TextButton>           waveform;
-    ScopedPointer<FFmpegVideoComponent>  videoComponent;
+    ScopedPointer<VideoComponentWithDropper> videoComponent;
     ScopedPointer<FFmpegVideoReader>     videoReader;
     ScopedPointer<AudioTransportSource> transportSource;
     ScopedPointer<AudioVisualiserComponent> visualiser;

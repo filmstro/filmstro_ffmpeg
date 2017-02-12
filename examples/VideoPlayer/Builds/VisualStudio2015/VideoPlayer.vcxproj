@@ -135,8 +135,8 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\MainComponent.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
+    <ClCompile Include="..\..\Source\MainComponent.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\juce_audio_basics.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1736,6 +1736,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\juce_opengl.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\OSDComponent.h"/>
     <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics.h"/>
     <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics_AudioBufferFIFO.h"/>
     <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics_AudioProcessorPlayerSource.h"/>
@@ -1744,6 +1745,7 @@
     <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
+    <ClInclude Include="..\..\Source\OSDComponent.h"/>
     <ClInclude Include="..\..\..\..\filmstro_ffmpeg.h"/>
     <ClInclude Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoComponent.h"/>
     <ClInclude Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoListener.h"/>

@@ -364,10 +364,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\MainComponent.cpp">
+    <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>VideoPlayer\Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Main.cpp">
+    <ClCompile Include="..\..\Source\MainComponent.cpp">
       <Filter>VideoPlayer\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\juce_audio_basics.cpp">
@@ -2148,6 +2148,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\OSDComponent.h">
+      <Filter>VideoPlayer\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics.h">
       <Filter>Juce Modules\filmstro_audiobasics</Filter>
     </ClInclude>
@@ -2171,6 +2174,9 @@
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h">
       <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\OSDComponent.h">
+      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\filmstro_ffmpeg.h">
       <Filter>Juce Modules\filmstro_ffmpeg</Filter>

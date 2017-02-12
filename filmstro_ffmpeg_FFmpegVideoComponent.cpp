@@ -56,6 +56,7 @@ FFmpegVideoComponent::FFmpegVideoComponent ()
     showOSD      (true),
     dirty        (true)
 {
+    setOpaque (true);
     startTimerHz (80);
 }
 
@@ -95,6 +96,7 @@ void FFmpegVideoComponent::timerCallback ()
 
 void FFmpegVideoComponent::paint (juce::Graphics& g)
 {
+    g.fillAll (Colours::black);
     g.setFont(24);
     if (videoSource) {
         if (currentFrame && frameBuffer.isValid()) {

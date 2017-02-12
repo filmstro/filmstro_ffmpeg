@@ -5,9 +5,10 @@
               jucerVersion="4.3.1">
   <MAINGROUP id="N4nDda" name="VideoPlayer">
     <GROUP id="{3157C055-224D-BD2E-9A8C-CDE725FE3ADB}" name="Source">
+      <FILE id="sWTx6g" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="LNSQ4b" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
-      <FILE id="sWTx6g" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="s5oeWD" name="OSDComponent.h" compile="0" resource="0" file="Source/OSDComponent.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

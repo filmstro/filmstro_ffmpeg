@@ -36,6 +36,8 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+#include "OSDComponent.h"
+
 //==============================================================================
 /*
  This component lives inside our window, and this is where you should put all
@@ -72,8 +74,6 @@ public:
     your controls and content.
 */
 class MainContentComponent   :  public AudioAppComponent,
-                                public ButtonListener,
-                                public SliderListener,
                                 public FFmpegVideoListener
 {
 public:
@@ -81,35 +81,6 @@ public:
     MainContentComponent()
     {
         videoAspectRatio = 1.77;
-        videoFileName = new Label();
-        videoFileName->setColour (Label::textColourId, Colours::lightblue);
-        addAndMakeVisible (videoFileName);
-
-        openFile = new TextButton ("Open", "Open");
-        openFile->addListener (this);
-        addAndMakeVisible (openFile);
-
-        play = new TextButton ("Play", "Play");
-        play->addListener (this);
-        addAndMakeVisible (play);
-
-        pause = new TextButton ("Pause", "Pause");
-        pause->addListener (this);
-        addAndMakeVisible (pause);
-
-        stop = new TextButton ("Stop", "Stop");
-        stop->addListener (this);
-        addAndMakeVisible (stop);
-
-        osd = new TextButton ("OSD", "OSD");
-        osd->setClickingTogglesState (true);
-        osd->setToggleState (true, dontSendNotification);
-        osd->addListener (this);
-        addAndMakeVisible (osd);
-
-        waveform = new TextButton ("Visualiser", "Visualiser");
-        waveform->setClickingTogglesState (true);
-        addAndMakeVisible (waveform);
 
         videoReader = new FFmpegVideoReader (384000, 30);
         videoReader->addVideoListener (this);
@@ -120,13 +91,8 @@ public:
         videoComponent = new VideoComponentWithDropper (videoReader);
         addAndMakeVisible (videoComponent);
 
-        seekBar = new Slider (Slider::LinearHorizontal, Slider::NoTextBox);
-        addAndMakeVisible (seekBar);
-        seekBar->addListener (this);
-
-        visualiser = new AudioVisualiserComponent (2);
-        visualiser->setSamplesPerBlock (32);
-        addAndMakeVisible (visualiser);
+        osdComponent = new OSDComponent (videoReader, transportSource);
+        addAndMakeVisible (osdComponent);
 
         setSize (800, 600);
 
@@ -152,12 +118,6 @@ public:
     {
         // This function will be called when the audio device is started, or when
         // its settings (i.e. sample rate, block size, etc) are changed.
-
-        // You can use this function to initialise any resources you might need,
-        // but be careful - it will be called on the audio thread, not the GUI thread.
-
-        // For more details, see the help for AudioProcessor::prepareToPlay()
-
         videoReader->prepareToPlay (samplesPerBlockExpected, sampleRate);
         transportSource->prepareToPlay (samplesPerBlockExpected, sampleRate);
     }
@@ -166,10 +126,6 @@ public:
     {
         // the AudioTransportSource takes care of start, stop and resample
         transportSource->getNextAudioBlock (bufferToFill);
-
-        if (waveform->getToggleState()) {
-            visualiser->pushBuffer (*bufferToFill.buffer);
-        }
     }
 
     void releaseResources() override
@@ -179,34 +135,6 @@ public:
     }
 
     //==============================================================================
-    void buttonClicked (Button* b) override
-    {
-        if (b == openFile) {
-            transportSource->stop();
-            FileChooser chooser ("Open Video File");
-            if (chooser.browseForFileToOpen()) {
-                File video = chooser.getResult();
-                videoFileName->setText (video.getFullPathName(), dontSendNotification);
-                videoReader->loadMovieFile (video);
-
-            }
-        }
-        else if (b == play) {
-            transportSource->start();
-        }
-        else if (b == stop) {
-            transportSource->stop();
-            videoReader->setNextReadPosition (0);
-        }
-        else if (b == pause) {
-            transportSource->stop();
-        }
-        else if (b == osd) {
-            videoComponent->setShowOSD (osd->getToggleState());
-            seekBar->setVisible (osd->getToggleState());
-        }
-    }
-
     /** Reset gui when a new file is loaded */
     void videoFileChanged (const juce::File& video) override
     {
@@ -226,7 +154,7 @@ public:
         DBG ("Pixel aspect ratio:" + String (videoReader->getVideoPixelAspect()));
         DBG ("====================================================");
 
-        seekBar->setRange (0.0, videoReader->getVideoDuration ());
+        osdComponent->setVideoLength (videoReader->getVideoDuration ());
 
         transportSource->setSource (videoReader, 0, nullptr, videoReader->getVideoSamplingRate(), videoReader->getVideoChannels());
 
@@ -240,41 +168,22 @@ public:
         }
     }
 
-    /** React to slider changes with seeking */
-    void sliderValueChanged (juce::Slider *slider) override
-    {
-        if (slider == seekBar) {
-            videoReader->setNextReadPosition (slider->getValue() * videoReader->getVideoSamplingRate());
-        }
-    }
-
     void presentationTimestampChanged (const double pts) override
     {
         // a Slider::setValue can only occur on message thread, because it triggers a
         // repaint, which fails an assert being the message thread
-        //seekBar->setValue (pts, dontSendNotification);
+        //osdComponent->setCurrentTime (videoReader->getCurrentTimeStamp());
     }
 
     void paint (Graphics& g) override
     {
-        // until the presentationTimestampChanged callback works we must update here
-        seekBar->setValue (videoReader->getCurrentTimeStamp(), dontSendNotification);
         g.fillAll (Colours::black);
     }
 
     void resized() override
     {
-        videoFileName->setBounds (0, 0, getWidth()-360, 20);
-        play->setBounds (getWidth()-300, 0, 40, 20);
-        pause->setBounds (getWidth()-260, 0, 40, 20);
-        stop->setBounds (getWidth()-220, 0, 40, 20);
-        osd->setBounds (getWidth()-180, 0, 40, 20);
-        waveform->setBounds (getWidth()-140, 0, 80, 20);
-        openFile->setBounds (getWidth()-60, 0, 60, 20);
-        const int videoHeight = getHeight() - 20;
-        videoComponent->setBounds (0, 20, getWidth(), videoHeight);
-        seekBar->setBounds (40, videoHeight - 30, getWidth() - 80, 20);
-        visualiser->setBounds (0, videoHeight + 20, getWidth(), getHeight() - (videoHeight + 20));
+        videoComponent->setBounds (getBounds());
+        osdComponent->setBounds (getBounds());
     }
 
 
@@ -282,19 +191,10 @@ private:
     //==============================================================================
 
     // Your private member variables go here...
-
-    ScopedPointer<Label>                videoFileName;
-    ScopedPointer<TextButton>           openFile;
-    ScopedPointer<TextButton>           play;
-    ScopedPointer<TextButton>           pause;
-    ScopedPointer<TextButton>           stop;
-    ScopedPointer<TextButton>           osd;
-    ScopedPointer<TextButton>           waveform;
     ScopedPointer<VideoComponentWithDropper> videoComponent;
-    ScopedPointer<FFmpegVideoReader>     videoReader;
+    ScopedPointer<FFmpegVideoReader>    videoReader;
+    ScopedPointer<OSDComponent>         osdComponent;
     ScopedPointer<AudioTransportSource> transportSource;
-    ScopedPointer<AudioVisualiserComponent> visualiser;
-    ScopedPointer<Slider>               seekBar;
 
     double                              videoAspectRatio;
 

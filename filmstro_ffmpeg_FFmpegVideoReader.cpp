@@ -542,7 +542,7 @@ void FFmpegVideoReader::DecoderThread::run()
 
 void FFmpegVideoReader::DecoderThread::setCurrentPTS (const double pts, bool seek)
 {
-    if (seek) {
+    if (audioContext && seek) {
         int64_t readPos = pts * audioContext->sample_rate;
         av_seek_frame (formatContext, audioStreamIdx, readPos, 0);
         // invalidate all FIFOs

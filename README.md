@@ -16,10 +16,14 @@ The reading is done using ffMpeg (ffmpeg.org). you will have to build ffmpeg
 and link your project to it. We use this flags:
 
 OSX:
+
     ./configure --cc=CC --arch=x86_64 --disable-static --enable-shared --disable-stripping --disable-debug --install-name-dir='@loader_path'
 
 Windows:
+
     ./configure --toolchain=msvc --disable-static --enable-shared --prefix=../build/windows --arch=x86 
+
+To make
 
     make -j10
     make install

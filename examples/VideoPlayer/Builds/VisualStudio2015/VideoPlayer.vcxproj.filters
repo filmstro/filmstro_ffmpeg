@@ -11,23 +11,11 @@
     <Filter Include="Juce Modules">
       <UniqueIdentifier>{422C46B7-0467-2DB0-BF3C-16DFCAFD69AC}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Juce Modules\filmstro_audiobasics">
-      <UniqueIdentifier>{73CF063E-7157-9A15-E530-D8A851B54B36}</UniqueIdentifier>
+    <Filter Include="Juce Modules\filmstro_audiohelpers">
+      <UniqueIdentifier>{A1BD6C38-585E-F298-70F7-68B82C626E9C}</UniqueIdentifier>
     </Filter>
     <Filter Include="Juce Modules\filmstro_ffmpeg">
       <UniqueIdentifier>{98DA5E48-476C-BBD2-E4F6-B058E726F647}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Juce Modules\filmstro_ffmpeg\examples">
-      <UniqueIdentifier>{EF43851B-3360-D879-6280-FECB6CD5D57C}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Juce Modules\filmstro_ffmpeg\examples\VideoPlayer">
-      <UniqueIdentifier>{A2E15242-7D98-7BB9-48A3-2F74A9005AFA}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode">
-      <UniqueIdentifier>{DF48225F-2CBA-CB9C-52CB-73F5629C476A}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\Source">
-      <UniqueIdentifier>{D822F4CA-3630-0F1B-4198-85577EE27A70}</UniqueIdentifier>
     </Filter>
     <Filter Include="Juce Modules\juce_audio_basics">
       <UniqueIdentifier>{3247ED97-A75A-F50B-8CCC-46155E895806}</UniqueIdentifier>
@@ -370,94 +358,16 @@
     <ClCompile Include="..\..\Source\MainComponent.cpp">
       <Filter>VideoPlayer\Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_basics.cpp">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_basics.mm">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_devices.cpp">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_devices.mm">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_formats.cpp">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_formats.mm">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_processors.cpp">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_processors.mm">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_utils.cpp">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_utils.mm">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_core.cpp">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_core.mm">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_data_structures.cpp">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_data_structures.mm">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_events.cpp">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_events.mm">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_graphics.cpp">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_graphics.mm">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_gui_basics.cpp">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_gui_basics.mm">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_gui_extra.cpp">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_gui_extra.mm">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_opengl.cpp">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_opengl.mm">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Main.cpp">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\MainComponent.cpp">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoComponent.cpp">
+    <ClCompile Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoComponent.cpp">
       <Filter>Juce Modules\filmstro_ffmpeg</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoReader.cpp">
+    <ClCompile Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoReader.cpp">
       <Filter>Juce Modules\filmstro_ffmpeg</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoScaler.cpp">
+    <ClCompile Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoScaler.cpp">
       <Filter>Juce Modules\filmstro_ffmpeg</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoWriter.cpp">
+    <ClCompile Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoWriter.cpp">
       <Filter>Juce Modules\filmstro_ffmpeg</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.cpp">
@@ -2151,52 +2061,43 @@
     <ClInclude Include="..\..\Source\OSDComponent.h">
       <Filter>VideoPlayer\Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics.h">
-      <Filter>Juce Modules\filmstro_audiobasics</Filter>
+    <ClInclude Include="..\..\..\..\modules\filmstro_audiohelpers\filmstro_audiohelpers.h">
+      <Filter>Juce Modules\filmstro_audiohelpers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics_AudioBufferFIFO.h">
-      <Filter>Juce Modules\filmstro_audiobasics</Filter>
+    <ClInclude Include="..\..\..\..\modules\filmstro_audiohelpers\filmstro_audiohelpers_AudioBufferFIFO.h">
+      <Filter>Juce Modules\filmstro_audiohelpers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics_AudioProcessorPlayerSource.h">
-      <Filter>Juce Modules\filmstro_audiobasics</Filter>
+    <ClInclude Include="..\..\..\..\modules\filmstro_audiohelpers\filmstro_audiohelpers_AudioProcessorPlayerSource.h">
+      <Filter>Juce Modules\filmstro_audiohelpers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics_OutputSourcePlayer.h">
-      <Filter>Juce Modules\filmstro_audiobasics</Filter>
+    <ClInclude Include="..\..\..\..\modules\filmstro_audiohelpers\filmstro_audiohelpers_OutputSourcePlayer.h">
+      <Filter>Juce Modules\filmstro_audiohelpers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics_SharedFormatManager.h">
-      <Filter>Juce Modules\filmstro_audiobasics</Filter>
+    <ClInclude Include="..\..\..\..\modules\filmstro_audiohelpers\filmstro_audiohelpers_SharedFormatManager.h">
+      <Filter>Juce Modules\filmstro_audiohelpers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics.h">
-      <Filter>Juce Modules\filmstro_audiobasics</Filter>
+    <ClInclude Include="..\..\..\..\modules\filmstro_audiohelpers\filmstro_audiohelpers.h">
+      <Filter>Juce Modules\filmstro_audiohelpers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\OSDComponent.h">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\filmstro_ffmpeg.h">
+    <ClInclude Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg.h">
       <Filter>Juce Modules\filmstro_ffmpeg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoComponent.h">
+    <ClInclude Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoComponent.h">
       <Filter>Juce Modules\filmstro_ffmpeg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoListener.h">
+    <ClInclude Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoListener.h">
       <Filter>Juce Modules\filmstro_ffmpeg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoReader.h">
+    <ClInclude Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoReader.h">
       <Filter>Juce Modules\filmstro_ffmpeg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoScaler.h">
+    <ClInclude Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoScaler.h">
       <Filter>Juce Modules\filmstro_ffmpeg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoWriter.h">
+    <ClInclude Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoWriter.h">
       <Filter>Juce Modules\filmstro_ffmpeg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\filmstro_ffmpeg.h">
+    <ClInclude Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg.h">
       <Filter>Juce Modules\filmstro_ffmpeg</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.h">
@@ -3998,21 +3899,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\filmstro_audiobasics\LICENSE.md">
-      <Filter>Juce Modules\filmstro_audiobasics</Filter>
-    </None>
-    <None Include="..\..\..\..\..\filmstro_audiobasics\README.md">
-      <Filter>Juce Modules\filmstro_audiobasics</Filter>
-    </None>
-    <None Include="..\..\JuceLibraryCode\ReadMe.txt">
-      <Filter>Juce Modules\filmstro_ffmpeg\examples\VideoPlayer\JuceLibraryCode</Filter>
-    </None>
-    <None Include="..\..\..\..\LICENSE.md">
-      <Filter>Juce Modules\filmstro_ffmpeg</Filter>
-    </None>
-    <None Include="..\..\..\..\README.md">
-      <Filter>Juce Modules\filmstro_ffmpeg</Filter>
-    </None>
     <None Include="..\..\..\..\..\..\..\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt">
       <Filter>Juce Modules\juce_audio_formats\codecs\flac</Filter>
     </None>

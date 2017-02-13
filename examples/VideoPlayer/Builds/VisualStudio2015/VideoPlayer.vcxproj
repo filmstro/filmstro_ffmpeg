@@ -57,7 +57,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\..\..\..\OpenSource;..\..\..\..\..\..\..\JUCE\modules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\..\modules;..\..\..\..\..\..\..\JUCE\modules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.0.0;JUCE_APP_VERSION_HEX=0x10000;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -100,7 +100,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\..\..\..\OpenSource;..\..\..\..\..\..\..\JUCE\modules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\..\modules;..\..\..\..\..\..\..\JUCE\modules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.0.0;JUCE_APP_VERSION_HEX=0x10000;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -137,58 +137,16 @@
   <ItemGroup>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\Source\MainComponent.cpp"/>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_basics.cpp">
+    <ClCompile Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_devices.cpp">
+    <ClCompile Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoReader.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_formats.cpp">
+    <ClCompile Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoScaler.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_processors.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_utils.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_core.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_data_structures.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_events.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_graphics.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_gui_basics.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_gui_extra.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_opengl.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Main.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\MainComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoReader.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoScaler.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoWriter.cpp">
+    <ClCompile Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoWriter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.cpp">
@@ -1737,22 +1695,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\OSDComponent.h"/>
-    <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics.h"/>
-    <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics_AudioBufferFIFO.h"/>
-    <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics_AudioProcessorPlayerSource.h"/>
-    <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics_OutputSourcePlayer.h"/>
-    <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics_SharedFormatManager.h"/>
-    <ClInclude Include="..\..\..\..\..\filmstro_audiobasics\filmstro_audiobasics.h"/>
-    <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h"/>
-    <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
-    <ClInclude Include="..\..\Source\OSDComponent.h"/>
-    <ClInclude Include="..\..\..\..\filmstro_ffmpeg.h"/>
-    <ClInclude Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoComponent.h"/>
-    <ClInclude Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoListener.h"/>
-    <ClInclude Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoReader.h"/>
-    <ClInclude Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoScaler.h"/>
-    <ClInclude Include="..\..\..\..\filmstro_ffmpeg_FFmpegVideoWriter.h"/>
-    <ClInclude Include="..\..\..\..\filmstro_ffmpeg.h"/>
+    <ClInclude Include="..\..\..\..\modules\filmstro_audiohelpers\filmstro_audiohelpers.h"/>
+    <ClInclude Include="..\..\..\..\modules\filmstro_audiohelpers\filmstro_audiohelpers_AudioBufferFIFO.h"/>
+    <ClInclude Include="..\..\..\..\modules\filmstro_audiohelpers\filmstro_audiohelpers_AudioProcessorPlayerSource.h"/>
+    <ClInclude Include="..\..\..\..\modules\filmstro_audiohelpers\filmstro_audiohelpers_OutputSourcePlayer.h"/>
+    <ClInclude Include="..\..\..\..\modules\filmstro_audiohelpers\filmstro_audiohelpers_SharedFormatManager.h"/>
+    <ClInclude Include="..\..\..\..\modules\filmstro_audiohelpers\filmstro_audiohelpers.h"/>
+    <ClInclude Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg.h"/>
+    <ClInclude Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoComponent.h"/>
+    <ClInclude Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoListener.h"/>
+    <ClInclude Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoReader.h"/>
+    <ClInclude Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoScaler.h"/>
+    <ClInclude Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg_FFmpegVideoWriter.h"/>
+    <ClInclude Include="..\..\..\..\modules\filmstro_ffmpeg\filmstro_ffmpeg.h"/>
     <ClInclude Include="..\..\..\..\..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.h"/>
     <ClInclude Include="..\..\..\..\..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h"/>
     <ClInclude Include="..\..\..\..\..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioSampleBuffer.h"/>
@@ -2354,11 +2309,6 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\filmstro_audiobasics\LICENSE.md"/>
-    <None Include="..\..\..\..\..\filmstro_audiobasics\README.md"/>
-    <None Include="..\..\JuceLibraryCode\ReadMe.txt"/>
-    <None Include="..\..\..\..\LICENSE.md"/>
-    <None Include="..\..\..\..\README.md"/>
     <None Include="..\..\..\..\..\..\..\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>
     <None Include="..\..\..\..\..\..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\Ogg Vorbis Licence.txt"/>
     <None Include="..\..\..\..\..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\changes to libjpeg for JUCE.txt"/>

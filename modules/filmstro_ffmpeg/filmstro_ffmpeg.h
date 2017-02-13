@@ -39,7 +39,7 @@
   name:          FFmpeg wrapping classes for use in JUCE
   description:   Provides classes to read audio streams from video files or to
                  mux audio into an existing video
-  dependencies:  juce_audio_basics, juce_audio_formats, juce_core, filmstro_audiobasics
+  dependencies:  juce_audio_basics, juce_audio_formats, juce_core, filmstro_audiohelpers
   website:       http://www.filmstro.com/
   license:       BSD V2 3-clause
 
@@ -57,7 +57,7 @@
 #include <juce_audio_formats/juce_audio_formats.h>
 #include <juce_core/juce_core.h>
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "filmstro_audiobasics/filmstro_audiobasics_AudioBufferFIFO.h"
+#include "filmstro_audiohelpers/filmstro_audiohelpers_AudioBufferFIFO.h"
 
 #ifndef FILMSTRO_USE_FFMPEG
 #define FILMSTRO_USE_FFMPEG 1

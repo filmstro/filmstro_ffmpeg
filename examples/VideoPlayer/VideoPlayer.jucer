@@ -35,8 +35,8 @@
         <MODULEPATH id="juce_audio_formats" path="../../../../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../../../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../../../../../JUCE/modules"/>
-        <MODULEPATH id="filmstro_ffmpeg" path="../../../../OpenSource"/>
-        <MODULEPATH id="filmstro_audiobasics" path="../../../../OpenSource"/>
+        <MODULEPATH id="filmstro_ffmpeg" path="../../modules"/>
+        <MODULEPATH id="filmstro_audiohelpers" path="../../modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2015 targetFolder="Builds/VisualStudio2015" extraCompilerFlags="-I../../../../lib/build/windows/include"
@@ -60,13 +60,13 @@
         <MODULEPATH id="juce_audio_formats" path="../../../../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../../../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../../../../../JUCE/modules"/>
-        <MODULEPATH id="filmstro_ffmpeg" path="../../../../OpenSource"/>
-        <MODULEPATH id="filmstro_audiobasics" path="../../../../OpenSource"/>
+        <MODULEPATH id="filmstro_ffmpeg" path="../../modules"/>
+        <MODULEPATH id="filmstro_audiohelpers" path="../../modules"/>
       </MODULEPATHS>
     </VS2015>
   </EXPORTFORMATS>
   <MODULES>
-    <MODULE id="filmstro_audiobasics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="filmstro_audiohelpers" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="filmstro_ffmpeg" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>

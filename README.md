@@ -16,24 +16,21 @@ The reading is done using ffMpeg (ffmpeg.org). you will have to build ffmpeg
 and link your project to it. We use this flags:
 
 OSX:
-./configure --cc=CC --arch=x86_64 --disable-static --enable-shared --disable-stripping --disable-debug --install-name-dir='@loader_path'
+    ./configure --cc=CC --arch=x86_64 --disable-static --enable-shared --disable-stripping --disable-debug --install-name-dir='@loader_path'
 
 Windows:
-./configure --toolchain=msvc --disable-static --enable-shared --prefix=../build/windows --arch=x86 
+    ./configure --toolchain=msvc --disable-static --enable-shared --prefix=../build/windows --arch=x86 
 
-make -j10
-make install
+    make -j10
+    make install
 
-
-It also uses a helper class of our module filmstro_audiobasics
-(Sorry Jules to borrow the name, it is supposed to sit besides the juce_audiobasics)
 
 Current State
 =============
 
 It works for us with mp4 files. However, there are many formats, and many create
-problems, mostly to do with the sequence of packets / frames in the stream. Here
-any insights and findings are very welcome.
+problems, mostly to do with the sequence of packets / frames in the stream. To
+improve this any insights and findings are very welcome.
 
 The VideoWriter is leftover from a previous test and will be completely rewritten.
 

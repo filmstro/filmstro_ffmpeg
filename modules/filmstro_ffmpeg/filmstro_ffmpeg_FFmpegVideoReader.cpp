@@ -243,6 +243,23 @@ void FFmpegVideoReader::setLooping (bool shouldLoop)
 }
 
 // ==============================================================================
+// FFmpeg low level
+// ==============================================================================
+
+AVCodecContext* FFmpegVideoReader::getVideoContext () const
+{
+    return decoder.getVideoContext();
+}
+AVCodecContext* FFmpegVideoReader::getAudioContext () const
+{
+    return decoder.getAudioContext();
+}
+AVCodecContext* FFmpegVideoReader::getSubtitleContext () const
+{
+    return decoder.getSubtitleContext();
+}
+
+// ==============================================================================
 // video decoder thread
 // ==============================================================================
 
@@ -659,5 +676,18 @@ int FFmpegVideoReader::DecoderThread::getNumChannels () const
         return audioContext->channels;
     }
     return 0;
+}
+
+AVCodecContext* FFmpegVideoReader::DecoderThread::getVideoContext () const
+{
+    return videoContext;
+}
+AVCodecContext* FFmpegVideoReader::DecoderThread::getAudioContext () const
+{
+    return audioContext;
+}
+AVCodecContext* FFmpegVideoReader::DecoderThread::getSubtitleContext () const
+{
+    return subtitleContext;
 }
 

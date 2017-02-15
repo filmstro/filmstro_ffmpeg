@@ -68,7 +68,7 @@ public:
     /*< Push samples into the FIFO from raw float arrays */
     void addToFifo (const FloatType** samples, int numSamples)
     {
-        jassert (getFreeSpace() > numSamples);
+        jassert (getFreeSpace() >= numSamples);
         int start1, size1, start2, size2;
         prepareToWrite (numSamples, start1, size1, start2, size2);
         if (size1 > 0)
@@ -84,7 +84,7 @@ public:
     void addToFifo (const juce::AudioBuffer<FloatType>& samples, int numSamples=-1)
     {
         const int addSamples = numSamples < 0 ? samples.getNumSamples() : numSamples;
-        jassert (getFreeSpace() > addSamples);
+        jassert (getFreeSpace() >= addSamples);
 
         int start1, size1, start2, size2;
         prepareToWrite (addSamples, start1, size1, start2, size2);
@@ -101,7 +101,7 @@ public:
     /*< Read samples from the FIFO into raw float arrays */
     void readFromFifo (FloatType** samples, int numSamples)
     {
-        jassert (getNumReady() > numSamples);
+        jassert (getNumReady() >= numSamples);
         int start1, size1, start2, size2;
         prepareToRead (numSamples, start1, size1, start2, size2);
         if (size1 > 0)

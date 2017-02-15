@@ -122,6 +122,10 @@ public:
 
         int getNumChannels () const;
 
+        AVCodecContext* getVideoContext () const;
+        AVCodecContext* getAudioContext () const;
+        AVCodecContext* getSubtitleContext () const;
+
     private:
 
         int openCodecContext (AVCodecContext** decoderContext,
@@ -252,6 +256,15 @@ public:
 
     /** Tells the source whether you'd like it to play in a loop. */
     void setLooping (bool shouldLoop) override;
+
+    // ==============================================================================
+    // FFmpeg low level
+    // ==============================================================================
+
+    AVCodecContext* getVideoContext () const;
+    AVCodecContext* getAudioContext () const;
+    AVCodecContext* getSubtitleContext () const;
+
 
     // ==============================================================================
 private:

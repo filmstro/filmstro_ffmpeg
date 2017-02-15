@@ -44,36 +44,91 @@
 class FFmpegVideoSource;
 
 
-class FFmpegVideoWriter
+class FFmpegVideoWriter : public FFmpegVideoListener
 {
 public:
 
     FFmpegVideoWriter();
     ~FFmpegVideoWriter();
 
-    bool openMovieFile (const juce::File& outputFile, double sampleRate);
+    /** Set the requested video codec before opening a file */
+    void setVideoCodec (AVCodecID codec = AV_CODEC_ID_PROBE);
+    /** Set the requested audio codec before opening a file */
+    void setAudioCodec (AVCodecID codec = AV_CODEC_ID_PROBE);
+    /** Set the requested subtitle codec before opening a file */
+    void setSubtitleCodec (AVCodecID codec = AV_CODEC_ID_PROBE);
 
-    void setVideoReader (FFmpegVideoReader* source);
+    /** Set the audio sample rate before opening a file */
+    void setSampleRate (const int newSampleRate);
 
-    void finishWriting ();
+    /** Set the video size before opening a file */
+    void setVideoSize (const int width, const int height);
 
-    bool writeAudioFrame (const juce::AudioSampleBuffer& bufferToWrite, int startSample, int numSamples);
+    /** Set the pixel format before opening a file */
+    void setPixelFormat (const AVPixelFormat format);
 
-    bool writeAudioFrame (const juce::AudioSampleBuffer& bufferToWrite);
+    /** Set the pixel aspect ratio as fraction before opening a file */
+    void setPixelAspect (const int num, const int den);
 
-    bool writeVideoFrame (AVFrame* frame);
+    /** copies settings from a context (e.g. FFmpegVideoReader) to the writer */
+    void copySettingsFromContext (const AVCodecContext* context);
+
+    /** Opens a file for writing audio, video and subtitles. The settings like
+     encoders, samplerate etc. has to be set first. */
+    bool openMovieFile (const juce::File& outputFile);
+
+    /** Closes the movie file. Also flushes all left over samples and frames */
+    void closeMovieFile ();
+
+    /** Append a chunk of audio data. It will call writeAudioFrame to get rid of the data */
+    void writeNextAudioBlock (juce::AudioSourceChannelInfo& info);
+
+    /** Write the next video frame. The timestamp has to be set in the frame. */
+    void writeNextVideoFrame (const AVFrame* frame);
+
+    /** Write the next video frame. */
+    void writeNextVideoFrame (const juce::Image& image, const AVRational timestamp);
+
+    /** This callback receives frames from e.g. the FFmpegVideoReader to be written to the video file. 
+     The timestamp has to be set in the frame. */
+    void displayNewFrame (const AVFrame*) override;
+
 
     // ==============================================================================
 private:
 
-    // source to provide video frames for writing
-    juce::WeakReference<FFmpegVideoReader> videoSource;
+    void closeContexts ();
+
+    void finishWriting ();
+
+    /** Write audio data to frame, if there is enough. If flush is set to true, it will append silence to fill the last frame. */
+    bool writeAudioFrame (const bool flush=false);
+
+    // ==============================================================================
+
+    juce::int64             writePosition;
 
     AVFormatContext*        formatContext;
+
+    AVCodecContext*         videoContext;
+    AVCodecContext*         audioContext;
+    AVCodecContext*         subtitleContext;
+
+    AVCodecID               videoCodec;
+    AVCodecID               audioCodec;
+    AVCodecID               subtitleCodec;
 
     int                     videoStreamIdx;
     int                     audioStreamIdx;
     int                     subtitleStreamIdx;
+
+    int                     sampleRate;
+    int                     channelLayout;
+
+    int                     videoWidth;
+    int                     videoHeight;
+    AVPixelFormat           pixelFormat;
+    AVRational              pixelAspect;
 
     // buffer audio to match the video's audio frame size
     AudioBufferFIFO<float>  audioFifo;

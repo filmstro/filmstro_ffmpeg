@@ -241,6 +241,9 @@ public:
     /** decodes packets to fill the audioFifo. If a video packet is found it will be forwarded to VideoDecoderThread */
     void 	getNextAudioBlock (const juce::AudioSourceChannelInfo &bufferToFill) override;
 
+    /** Wait until the decoder thread has finished enough data. This is needed for non-realtime processing. */
+    bool    waitForNextAudioBlockReady (const juce::AudioSourceChannelInfo &bufferToFill, const int msecs) const;
+
     /** Seeks in the stream */
     void 	setNextReadPosition (juce::int64 newPosition) override;
 

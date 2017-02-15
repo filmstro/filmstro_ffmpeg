@@ -183,10 +183,12 @@ public:
 
                 while (videoReader->getCurrentTimeStamp() < videoReader->getVideoDuration()) {
                     AudioSourceChannelInfo info (&buffer, 0, 1024);
+                    videoReader->waitForNextAudioBlockReady (info, 500);
                     videoReader->getNextAudioBlock (info);
 
                     writer.writeNextAudioBlock (info);
                 }
+                writer.closeMovieFile ();
 
                 videoReader->removeVideoListener (&writer);
             }

@@ -211,6 +211,15 @@ void FFmpegVideoReader::getNextAudioBlock (const juce::AudioSourceChannelInfo &b
     nextReadPos += bufferToFill.numSamples;
 }
 
+bool FFmpegVideoReader::waitForNextAudioBlockReady (const juce::AudioSourceChannelInfo &bufferToFill, const int msecs) const
+{
+    const juce::int64 timeout (Time::getCurrentTime().toMilliseconds() + msecs);
+    while (audioFifo.getNumReady () < bufferToFill.numSamples && Time::getCurrentTime().toMilliseconds() < timeout) {
+        Thread::sleep (5);
+    }
+    return false;
+}
+
 void FFmpegVideoReader::setNextReadPosition (juce::int64 newPosition)
 {
     nextReadPos = newPosition;

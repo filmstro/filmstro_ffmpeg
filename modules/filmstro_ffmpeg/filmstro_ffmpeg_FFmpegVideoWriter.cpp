@@ -235,6 +235,11 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
     return true;
 }
 
+void FFmpegVideoWriter::closeMovieFile ()
+{
+    finishWriting ();
+}
+
 void FFmpegVideoWriter::finishWriting ()
 {
     //FIXME: flush all buffers
@@ -332,7 +337,7 @@ bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
                 av_write_frame (formatContext, &packet);
             }
         }
-        av_freep (buffer);
+        //av_freep (buffer);
         av_packet_unref (&packet);
 
         writePosition += numFrameSamples;

@@ -41,6 +41,10 @@
 #ifndef filmstro_audiobasics_SharedFormatManager_h
 #define filmstro_audiobasics_SharedFormatManager_h
 
+/**
+ This is a AudioFormatManager that registers all basic formats when created.
+ Made to be used with JUCE's SharedResourcePointer
+ */
 class SharedFormatManager : public juce::AudioFormatManager
 {
 public:

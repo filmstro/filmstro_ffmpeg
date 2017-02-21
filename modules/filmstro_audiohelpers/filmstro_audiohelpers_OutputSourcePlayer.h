@@ -41,10 +41,18 @@
 #ifndef filmstro_audiobasics_OutputSourcePlayer_h
 #define filmstro_audiobasics_OutputSourcePlayer_h
 
+/**
+    This class provides an AudioSourcePlayer, which will adapt its resampler whenever 
+    the device changes the sampling rate
+  */
 class OutputSourcePlayer : public juce::AudioSourcePlayer
 {
 public:
-
+    /**
+     Constructs an OutputSourcePlayer. This makes the processing independent from the devices playback rate.
+     \param sampleRate is the sample rate the playing AudioSource would expect
+     \param channels is the number of channels for the resampler to provide. Defaults to 2 (stereo)
+     */
     OutputSourcePlayer (double sampleRate, int channels=2)
     : internalSampleRate (sampleRate),
     deviceSampleRate (0.0),
@@ -54,12 +62,18 @@ public:
 
     }
 
+    /**
+     Set or replace the source of the AudioSourcePlayer
+     */
     void setSource (juce::AudioSource* newSource)
     {
         const juce::ScopedLock sl (readLock);
         juce::AudioSourcePlayer::setSource (newSource);
     }
 
+    /**
+     Callback from the AudioIODevice. This drives the playback of the AudioSource
+     */
     void audioDeviceIOCallback (const float **inputChannelData, int totalNumInputChannels,
                                 float **outputChannelData, int totalNumOutputChannels,
                                 int numSamples) override
@@ -91,6 +105,9 @@ public:
         }
     }
 
+    /**
+     callback when the device wants to start using the AudioDeviceIOCallback
+     */
     void audioDeviceAboutToStart (juce::AudioIODevice *device) override
     {
         outputDevice = device;
@@ -100,6 +117,9 @@ public:
         juce::AudioSourcePlayer::audioDeviceAboutToStart (device);
     }
 
+    /**
+     Callback when the AudioIODevice just stopped using the AudioDeviceIOCallback
+     */
     void audioDeviceStopped () override
     {
         juce::AudioSourcePlayer::audioDeviceStopped();

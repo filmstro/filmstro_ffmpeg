@@ -164,19 +164,24 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
                 videoContext->height    = videoHeight;
                 videoContext->pix_fmt   = pixelFormat;
                 videoContext->sample_aspect_ratio = pixelAspect;
-                videoContext->time_base = AV_TIME_BASE_Q;
+                videoContext->time_base = (AVRational){.num = 1, .den = 25};
+
+                AVDictionary* options = nullptr;
 
                 if (encoder->id == AV_CODEC_ID_H264) {
                     av_opt_set (videoContext->priv_data, "preset", "medium", 0);
                     av_opt_set (videoContext->priv_data, "tune",   "film", 0);
+                    av_dict_set (&options, "preset", "medium", 0);
+                    av_dict_set (&options, "tune", "film", 0);
                 }
 
-                int ret = avcodec_open2 (videoContext, encoder, NULL);
+                int ret = avcodec_open2 (videoContext, encoder, &options);
                 if (ret < 0) {
                     DBG ("Cannot open video encoder");
                     videoStreamIdx = -1;
                     videoCodec = AV_CODEC_ID_NONE;
                 }
+                av_dict_free (&options);
             }
         }
     }

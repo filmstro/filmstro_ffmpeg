@@ -65,7 +65,7 @@ public:
     // video decoder thread
     // ==============================================================================
     /**
-     \class         FFmpegReader::DecoderThread
+     \class         FFmpegVideoReader::DecoderThread
      \description   class for FFmpegReader to decode audio and images asynchronously
                     This is to keep the audio thread as fast as possible
      */

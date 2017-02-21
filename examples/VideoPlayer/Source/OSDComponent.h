@@ -58,12 +58,12 @@ public:
         openFile->addListener (this);
         addAndMakeVisible (openFile);
         flexBox.items.add (FlexItem (*openFile).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
-
+#if 0
         saveFile = new TextButton ("Save", "Save");
         saveFile->addListener (this);
         addAndMakeVisible (saveFile);
         flexBox.items.add (FlexItem (*saveFile).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
-
+#endif
         seekBar = new Slider (Slider::LinearHorizontal, Slider::NoTextBox);
         addAndMakeVisible (seekBar);
         seekBar->addListener (this);

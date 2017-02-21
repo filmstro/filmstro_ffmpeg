@@ -39,8 +39,9 @@
         <MODULEPATH id="filmstro_audiohelpers" path="../../modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <VS2015 targetFolder="Builds/VisualStudio2015" extraCompilerFlags="-I../../../../lib/build/windows/include"
-            extraLinkerFlags="-L../../../../lib/build/windows/lib">
+    <VS2015 targetFolder="Builds/VisualStudio2015" extraCompilerFlags="-I../../../../../../FFmpeg/build/windows/include"
+            extraLinkerFlags="-LIBPATH:../../../../../../FFmpeg/build/windows/bin"
+            externalLibraries="avformat.lib&#10;avutil.lib&#10;avcodec.lib&#10;swscale.lib&#10;swresample.lib">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
                        isDebug="1" optimisation="1" targetName="VideoLibTest"/>
@@ -48,20 +49,20 @@
                        isDebug="0" optimisation="3" targetName="VideoLibTest"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="../../../../../JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../../../../../JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../../../../../JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../../../../JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../../../../JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../../../../JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="../../../../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../../../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../../../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../../../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../../../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../../../../JUCE/modules"/>
-        <MODULEPATH id="filmstro_ffmpeg" path="../../modules"/>
-        <MODULEPATH id="filmstro_audiohelpers" path="../../modules"/>
+        <MODULEPATH id="juce_core" path="..\..\..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_events" path="..\..\..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_graphics" path="..\..\..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_data_structures" path="..\..\..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_basics" path="..\..\..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_extra" path="..\..\..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_opengl" path="..\..\..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_basics" path="..\..\..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_devices" path="..\..\..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_formats" path="..\..\..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_processors" path="..\..\..\..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_utils" path="..\..\..\..\JUCE\modules"/>
+        <MODULEPATH id="filmstro_ffmpeg" path="..\..\modules"/>
+        <MODULEPATH id="filmstro_audiohelpers" path="..\..\modules"/>
       </MODULEPATHS>
     </VS2015>
   </EXPORTFORMATS>

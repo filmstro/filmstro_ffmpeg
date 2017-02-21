@@ -436,7 +436,7 @@ int FFmpegVideoReader::DecoderThread::decodeAudioPacket (AVPacket packet)
         // call decode until packet is empty
         int ret = avcodec_decode_audio4 (audioContext, audioFrame, &got_frame, &packet);
         if (ret < 0) {
-            DBG ("Error decoding audio frame: " + String (av_err2str(ret)));
+            DBG ("Error decoding audio frame: (Code " + String (ret) + ")");
             break;
         }
 
@@ -493,7 +493,7 @@ double FFmpegVideoReader::DecoderThread::decodeVideoPacket (AVPacket packet)
         if (avcodec_decode_video2 (videoContext, frame, &got_picture, &packet) > 0) {
             int64_t pts = av_frame_get_best_effort_timestamp (frame);
 
-            AVRational timeBase = AV_TIME_BASE_Q;
+            AVRational timeBase = av_make_q (1, AV_TIME_BASE);
             if (isPositiveAndBelow(videoStreamIdx, static_cast<int> (formatContext->nb_streams))) {
                 timeBase = formatContext->streams [videoStreamIdx]->time_base;
             }
@@ -674,7 +674,7 @@ double FFmpegVideoReader::DecoderThread::getSampleRate () const
 double FFmpegVideoReader::DecoderThread::getDuration () const
 {
     if (formatContext) {
-        return formatContext->duration * av_q2d (AV_TIME_BASE_Q);
+        return formatContext->duration / AV_TIME_BASE;
     }
     return 0;
 }

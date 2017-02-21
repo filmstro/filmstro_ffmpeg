@@ -164,7 +164,7 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
                 videoContext->height    = videoHeight;
                 videoContext->pix_fmt   = pixelFormat;
                 videoContext->sample_aspect_ratio = pixelAspect;
-                videoContext->time_base = (AVRational){.num = 1, .den = 25};
+                videoContext->time_base = av_make_q (1, 25);
 
                 AVDictionary* options = nullptr;
 
@@ -214,9 +214,9 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
         }
     }
 
-    if (subtitleCodec > AV_CODEC_ID_NONE) {
-        // FIXME: TODO
-    }
+    //if (subtitleCodec > AV_CODEC_ID_NONE) {
+    //    // FIXME: TODO
+    //}
 
     if (!(formatContext->oformat->flags & AVFMT_NOFILE)) {
         if (avio_open (&formatContext->pb, outputFile.getFullPathName().toRawUTF8(), AVIO_FLAG_WRITE) < 0) {
@@ -330,12 +330,14 @@ bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
                                   bufferSize,
                                   0);
 
+#ifndef WIN32
+// FIXME - doesn't compile on windows
         float* sampleData [frame->channels];
         for (int i=0; i < frame->channels; ++i) {
             sampleData[i] = samples + i * audioContext->frame_size;
         }
         audioFifo.readFromFifo (sampleData, numFrameSamples);
-
+#endif
         int got_output = 0;
         if (avcodec_encode_audio2 (audioContext, &packet, frame, &got_output) >= 0) {
             if (got_output) {

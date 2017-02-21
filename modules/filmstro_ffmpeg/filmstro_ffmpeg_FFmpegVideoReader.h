@@ -41,6 +41,7 @@
 #ifndef FILMSTRO_FFMPEG_FFMPEGVIDEOREADER_H_INCLUDED
 #define FILMSTRO_FFMPEG_FFMPEGVIDEOREADER_H_INCLUDED
 
+#include <atomic>
 
 /**
  \class         FFmpegVideoReader

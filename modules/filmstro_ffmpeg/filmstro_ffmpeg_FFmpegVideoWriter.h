@@ -123,7 +123,7 @@ private:
     int                     subtitleStreamIdx;
 
     int                     sampleRate;
-    int                     channelLayout;
+    int64_t                 channelLayout;
 
     int                     videoWidth;
     int                     videoHeight;

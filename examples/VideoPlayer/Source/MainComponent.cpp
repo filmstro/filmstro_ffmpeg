@@ -64,6 +64,7 @@ public:
         if (FFmpegVideoReader* reader = getVideoReader()) {
             File fileToOpen (files [0]);
             reader->loadMovieFile (fileToOpen);
+            Process::makeForegroundProcess ();
         }
     }
 };

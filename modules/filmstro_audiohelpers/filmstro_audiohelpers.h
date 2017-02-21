@@ -35,7 +35,7 @@
  description:   Audio helper classes of general purpose
  dependencies:  juce_audio_basics, juce_audio_formats, juce_audio_devices, juce_audio_processors
  website:       http://www.filmstro.com/
- license:       Proprietary
+ license:       BSD V2 3-clause
 
  END_JUCE_MODULE_DECLARATION
 

@@ -58,7 +58,12 @@ public:
         openFile->addListener (this);
         addAndMakeVisible (openFile);
         flexBox.items.add (FlexItem (*openFile).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
-
+#if 0
+        saveFile = new TextButton ("Save", "Save");
+        saveFile->addListener (this);
+        addAndMakeVisible (saveFile);
+        flexBox.items.add (FlexItem (*saveFile).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
+#endif
         seekBar = new Slider (Slider::LinearHorizontal, Slider::NoTextBox);
         addAndMakeVisible (seekBar);
         seekBar->addListener (this);
@@ -157,6 +162,37 @@ public:
             transport->start ();
 
         }
+        else if (b == saveFile) {
+            transport->stop();
+            FileChooser chooser ("Save Video File");
+            if (chooser.browseForFileToSave (true)) {
+                File saveFileName = chooser.getResult();
+
+                FFmpegVideoWriter writer;
+                writer.copySettingsFromContext (videoReader->getVideoContext());
+                writer.copySettingsFromContext (videoReader->getAudioContext());
+                writer.copySettingsFromContext (videoReader->getSubtitleContext());
+
+                writer.openMovieFile (saveFileName);
+
+                videoReader->setNextReadPosition (0);
+                videoReader->addVideoListener (&writer);
+
+                AudioBuffer<float> buffer;
+                buffer.setSize (2, 1024);
+
+                while (videoReader->getCurrentTimeStamp() < videoReader->getVideoDuration()) {
+                    AudioSourceChannelInfo info (&buffer, 0, 1024);
+                    videoReader->waitForNextAudioBlockReady (info, 500);
+                    videoReader->getNextAudioBlock (info);
+
+                    writer.writeNextAudioBlock (info);
+                }
+                writer.closeMovieFile ();
+
+                videoReader->removeVideoListener (&writer);
+            }
+        }
     }
 
 private:
@@ -166,6 +202,7 @@ private:
 
     ScopedPointer<Slider>               seekBar;
     ScopedPointer<TextButton>           openFile;
+    ScopedPointer<TextButton>           saveFile;
     ScopedPointer<TextButton>           play;
     ScopedPointer<TextButton>           pause;
     ScopedPointer<TextButton>           stop;

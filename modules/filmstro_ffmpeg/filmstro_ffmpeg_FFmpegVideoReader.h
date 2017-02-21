@@ -41,6 +41,7 @@
 #ifndef FILMSTRO_FFMPEG_FFMPEGVIDEOREADER_H_INCLUDED
 #define FILMSTRO_FFMPEG_FFMPEGVIDEOREADER_H_INCLUDED
 
+#include <atomic>
 
 /**
  \class         FFmpegVideoReader
@@ -65,7 +66,7 @@ public:
     // video decoder thread
     // ==============================================================================
     /**
-     \class         FFmpegReader::DecoderThread
+     \class         FFmpegVideoReader::DecoderThread
      \description   class for FFmpegReader to decode audio and images asynchronously
                     This is to keep the audio thread as fast as possible
      */
@@ -121,6 +122,10 @@ public:
         double getDuration () const;
 
         int getNumChannels () const;
+
+        AVCodecContext* getVideoContext () const;
+        AVCodecContext* getAudioContext () const;
+        AVCodecContext* getSubtitleContext () const;
 
     private:
 
@@ -237,6 +242,9 @@ public:
     /** decodes packets to fill the audioFifo. If a video packet is found it will be forwarded to VideoDecoderThread */
     void 	getNextAudioBlock (const juce::AudioSourceChannelInfo &bufferToFill) override;
 
+    /** Wait until the decoder thread has finished enough data. This is needed for non-realtime processing. */
+    bool    waitForNextAudioBlockReady (const juce::AudioSourceChannelInfo &bufferToFill, const int msecs) const;
+
     /** Seeks in the stream */
     void 	setNextReadPosition (juce::int64 newPosition) override;
 
@@ -252,6 +260,15 @@ public:
 
     /** Tells the source whether you'd like it to play in a loop. */
     void setLooping (bool shouldLoop) override;
+
+    // ==============================================================================
+    // FFmpeg low level
+    // ==============================================================================
+
+    AVCodecContext* getVideoContext () const;
+    AVCodecContext* getAudioContext () const;
+    AVCodecContext* getSubtitleContext () const;
+
 
     // ==============================================================================
 private:

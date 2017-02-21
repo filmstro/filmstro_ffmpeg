@@ -211,6 +211,15 @@ void FFmpegVideoReader::getNextAudioBlock (const juce::AudioSourceChannelInfo &b
     nextReadPos += bufferToFill.numSamples;
 }
 
+bool FFmpegVideoReader::waitForNextAudioBlockReady (const juce::AudioSourceChannelInfo &bufferToFill, const int msecs) const
+{
+    const juce::int64 timeout (Time::getCurrentTime().toMilliseconds() + msecs);
+    while (audioFifo.getNumReady () < bufferToFill.numSamples && Time::getCurrentTime().toMilliseconds() < timeout) {
+        Thread::sleep (5);
+    }
+    return false;
+}
+
 void FFmpegVideoReader::setNextReadPosition (juce::int64 newPosition)
 {
     nextReadPos = newPosition;
@@ -240,6 +249,23 @@ bool FFmpegVideoReader::isLooping() const
 void FFmpegVideoReader::setLooping (bool shouldLoop)
 {
     looping = shouldLoop;
+}
+
+// ==============================================================================
+// FFmpeg low level
+// ==============================================================================
+
+AVCodecContext* FFmpegVideoReader::getVideoContext () const
+{
+    return decoder.getVideoContext();
+}
+AVCodecContext* FFmpegVideoReader::getAudioContext () const
+{
+    return decoder.getAudioContext();
+}
+AVCodecContext* FFmpegVideoReader::getSubtitleContext () const
+{
+    return decoder.getSubtitleContext();
 }
 
 // ==============================================================================
@@ -410,7 +436,7 @@ int FFmpegVideoReader::DecoderThread::decodeAudioPacket (AVPacket packet)
         // call decode until packet is empty
         int ret = avcodec_decode_audio4 (audioContext, audioFrame, &got_frame, &packet);
         if (ret < 0) {
-            DBG ("Error decoding audio frame: " + String (av_err2str(ret)));
+            DBG ("Error decoding audio frame: (Code " + String (ret) + ")");
             break;
         }
 
@@ -467,7 +493,7 @@ double FFmpegVideoReader::DecoderThread::decodeVideoPacket (AVPacket packet)
         if (avcodec_decode_video2 (videoContext, frame, &got_picture, &packet) > 0) {
             int64_t pts = av_frame_get_best_effort_timestamp (frame);
 
-            AVRational timeBase = AV_TIME_BASE_Q;
+            AVRational timeBase = av_make_q (1, AV_TIME_BASE);
             if (isPositiveAndBelow(videoStreamIdx, static_cast<int> (formatContext->nb_streams))) {
                 timeBase = formatContext->streams [videoStreamIdx]->time_base;
             }
@@ -648,7 +674,7 @@ double FFmpegVideoReader::DecoderThread::getSampleRate () const
 double FFmpegVideoReader::DecoderThread::getDuration () const
 {
     if (formatContext) {
-        return formatContext->duration * av_q2d (AV_TIME_BASE_Q);
+        return formatContext->duration / AV_TIME_BASE;
     }
     return 0;
 }
@@ -659,5 +685,18 @@ int FFmpegVideoReader::DecoderThread::getNumChannels () const
         return audioContext->channels;
     }
     return 0;
+}
+
+AVCodecContext* FFmpegVideoReader::DecoderThread::getVideoContext () const
+{
+    return videoContext;
+}
+AVCodecContext* FFmpegVideoReader::DecoderThread::getAudioContext () const
+{
+    return audioContext;
+}
+AVCodecContext* FFmpegVideoReader::DecoderThread::getSubtitleContext () const
+{
+    return subtitleContext;
 }
 

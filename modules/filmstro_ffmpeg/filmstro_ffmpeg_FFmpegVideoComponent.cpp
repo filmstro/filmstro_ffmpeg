@@ -77,11 +77,13 @@ void FFmpegVideoComponent::resized ()
             else {
                 h = w / aspectRatio;
             }
-            frameBuffer = Image (Image::PixelFormat::ARGB, w, h, true);
+            frameBuffer = Image (Image::PixelFormat::ARGB, static_cast<int> (w), static_cast<int> (h), true);
             videoScaler.setupScaler (videoSource->getVideoWidth(),
                                      videoSource->getVideoHeight(),
                                      videoSource->getPixelFormat(),
-                                     w, h, AV_PIX_FMT_BGR0);
+                                     frameBuffer.getWidth(), 
+                                     frameBuffer.getHeight (), 
+                                     AV_PIX_FMT_BGR0);
         }
     }
 }

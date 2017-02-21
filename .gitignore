@@ -1,0 +1,4 @@
+docs/
+examples/VideoPlayer/Builds/VisualStudio2015/Win32/
+*.db
+*.opendb

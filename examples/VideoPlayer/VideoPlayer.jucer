@@ -12,15 +12,16 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-reserved-user-defined-literal&#10;-I/usr/local/Cellar/ffmpeg/3.1.3/include"
-               extraLinkerFlags="-L/usr/local/Cellar/ffmpeg/3.1.3/lib" externalLibraries="avformat&#10;avutil&#10;avcodec&#10;swscale&#10;swresample">
+    <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-reserved-user-defined-literal&#10;-I${FFMPEG_ROOT}/include"
+               extraLinkerFlags="-L${FFMPEG_ROOT}/lib" externalLibraries="avformat&#10;avutil&#10;avcodec&#10;swscale&#10;swresample"
+               extraDefs="FFMPEG_ROOT=/Volumes/data/Developer/Filmstro/OpenSource/ffmpeg/build">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="VideoLibTest"
                        osxCompatibility="10.7 SDK" cppLanguageStandard="c++11" cppLibType="libc++"
-                       customXcodeFlags="OTHER_CFLAGS=-I../../../../lib/build/darwin/include"/>
+                       customXcodeFlags=""/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="VideoLibTest"
                        osxCompatibility="10.7 SDK" cppLanguageStandard="c++11" cppLibType="libc++"
-                       customXcodeFlags="OTHER_CFLAGS=-I../../../../lib/build/darwin/include"/>
+                       customXcodeFlags=""/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../../../../JUCE/modules"/>

@@ -89,6 +89,7 @@ public:
         addAndMakeVisible (ffwd);
         flexBox.items.add (FlexItem (*ffwd).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
 
+        idle = new MouseIdle (*this);
     }
 
     ~OSDComponent()
@@ -195,11 +196,48 @@ public:
         }
     }
 
+    class MouseIdle : public MouseListener, public Timer
+    {
+    public:
+        MouseIdle (Component& c) :
+        component (c),
+        lastMovement (Time::getMillisecondCounter())
+        {
+            Desktop::getInstance().addGlobalMouseListener (this);
+            startTimerHz (10);
+        }
+
+        void timerCallback () override
+        {
+            if (Time::getMillisecondCounter() < lastMovement + 3000) {
+                component.setVisible (true);
+                component.setMouseCursor (MouseCursor::StandardCursorType::NormalCursor);
+            }
+            else {
+                component.setVisible (false);
+                component.setMouseCursor (MouseCursor::StandardCursorType::NoCursor);
+            }
+        }
+
+        void mouseMove (const MouseEvent &event) override
+        {
+            if (event.position.getDistanceFrom (lastPosition) > 3.0) {
+                lastMovement = Time::getMillisecondCounter();
+                lastPosition = event.position;
+            }
+        }
+    private:
+        Component&   component;
+        int64        lastMovement;
+        Point<float> lastPosition;
+    };
+
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OSDComponent)
 
     FlexBox                             flexBox;
 
+    ScopedPointer<MouseIdle>            idle;
     ScopedPointer<Slider>               seekBar;
     ScopedPointer<TextButton>           openFile;
     ScopedPointer<TextButton>           saveFile;

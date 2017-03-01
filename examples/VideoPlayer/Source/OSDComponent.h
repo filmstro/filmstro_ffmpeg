@@ -52,8 +52,6 @@ public:
 
         setInterceptsMouseClicks (false, true);
 
-        //flexBox.items.add (FlexItem().withFlex (8.0, 1.0).withAlignSelf (FlexItem::AlignSelf::flexEnd));
-
         openFile = new TextButton ("Open", "Open");
         openFile->addListener (this);
         addAndMakeVisible (openFile);
@@ -98,8 +96,17 @@ public:
 
     void paint (Graphics& g) override
     {
-        // is transparent
-        seekBar->setValue (videoReader->getCurrentTimeStamp(), dontSendNotification);
+        if (videoReader && videoReader->getVideoDuration() > 0) {
+            g.setColour (Colours::white);
+            g.setFont (24);
+            String dim = String (videoReader->getVideoWidth()) + " x " + String (videoReader->getVideoHeight());
+            g.drawFittedText (dim, getLocalBounds(), Justification::topLeft, 1);
+            g.drawFittedText (FFmpegVideoReader::formatTimeCode (videoReader->getCurrentTimeStamp ()),
+                              getLocalBounds(), Justification::topRight, 1);
+
+            // is transparent
+            seekBar->setValue (videoReader->getCurrentTimeStamp(), dontSendNotification);
+        }
     }
 
     void resized() override

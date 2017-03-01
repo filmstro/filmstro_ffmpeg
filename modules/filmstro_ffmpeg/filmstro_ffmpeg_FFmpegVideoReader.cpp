@@ -167,6 +167,24 @@ enum AVPixelFormat FFmpegVideoReader::getPixelFormat () const
     return decoder.getPixelFormat();
 }
 
+juce::String FFmpegVideoReader::formatTimeCode (const double tc)
+{
+    MemoryBlock formatted;
+    {
+        MemoryOutputStream str (formatted, false);
+        int tc_int = static_cast<int> (fabs(tc));
+        if (tc < 0.0)
+            str << "-";
+        if (tc >= 3600)
+            str << String (static_cast<int> (tc_int / 3600)) << ":";
+        str << String (static_cast<int> ((tc_int % 3600) / 60)).paddedLeft ('0', 2) << ":";
+        str << String (static_cast<int> (tc_int % 60)).paddedLeft ('0', 2) << ".";
+        str << String (static_cast<int> ((static_cast<int> (fabs(tc * 100))) % 100)).paddedLeft ('0', 2);
+    }
+    return formatted.toString();
+}
+
+
 // ==============================================================================
 // from AudioSource
 // ==============================================================================

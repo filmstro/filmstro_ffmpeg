@@ -229,6 +229,7 @@ public:
         will be converted to BGR0 to be displayed as juce::Image */
     enum AVPixelFormat getPixelFormat () const;
 
+    static juce::String formatTimeCode (const double tc);
 
 
     // ==============================================================================

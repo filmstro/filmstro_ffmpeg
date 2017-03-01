@@ -99,34 +99,13 @@ void FFmpegVideoComponent::timerCallback ()
 void FFmpegVideoComponent::paint (juce::Graphics& g)
 {
     g.fillAll (Colours::black);
-    g.setFont(24);
-    if (videoSource) {
-        if (currentFrame && frameBuffer.isValid()) {
-            videoScaler.convertFrameToImage (frameBuffer, currentFrame);
-            g.drawImageAt (frameBuffer,
-                           (getWidth() - frameBuffer.getWidth()) * 0.5,
-                           (getHeight() - frameBuffer.getHeight()) * 0.5);
-        }
-        g.setColour (Colours::grey);
-        g.drawRect (getLocalBounds ().reduced (1));
-        if (showOSD) {
-            g.setColour (Colours::white);
-            g.drawFittedText (String (videoSource->getVideoWidth()) + " x " +
-                              String (videoSource->getVideoHeight()),
-                              getLocalBounds().reduced (5), juce::Justification::topLeft, 1);
-#ifdef DEBUG
-            g.drawFittedText ("V: " + formatTimeCode (videoSource->getLastVideoPTS()),
-                              getLocalBounds().reduced (5, 30), juce::Justification::topRight, 1);
-            g.drawFittedText ("A: " + formatTimeCode (videoSource->getCurrentTimeStamp ()),
-                              getLocalBounds().reduced (5), juce::Justification::topRight, 1);
-#else
-            g.drawFittedText (formatTimeCode (videoSource->getLastVideoPTS ()),
-                              getLocalBounds().reduced (5), juce::Justification::topRight, 1);
-#endif
-        }
+    if (videoSource && currentFrame && frameBuffer.isValid()) {
+        videoScaler.convertFrameToImage (frameBuffer, currentFrame);
+        g.drawImageAt (frameBuffer,
+                       (getWidth() - frameBuffer.getWidth()) * 0.5,
+                       (getHeight() - frameBuffer.getHeight()) * 0.5);
     }
     else {
-        g.fillAll (juce::Colours::black);
         g.drawFittedText ("No VideoSource connected", getLocalBounds(), juce::Justification::centred, 1);
     }
 }
@@ -172,19 +151,3 @@ void FFmpegVideoComponent::setShowOSD (const bool shouldShowOSD)
     dirty = true;
 }
 
-juce::String FFmpegVideoComponent::formatTimeCode (const double tc)
-{
-    MemoryBlock formatted;
-    {
-        MemoryOutputStream str (formatted, false);
-        int tc_int = static_cast<int> (fabs(tc));
-        if (tc < 0.0)
-            str << "-";
-        if (tc >= 3600)
-            str << String (static_cast<int> (tc_int / 3600)) << ":";
-        str << String (static_cast<int> ((tc_int % 3600) / 60)).paddedLeft ('0', 2) << ":";
-        str << String (static_cast<int> (tc_int % 60)).paddedLeft ('0', 2) << ".";
-        str << String (static_cast<int> ((static_cast<int> (fabs(tc * 100))) % 100)).paddedLeft ('0', 2);
-    }
-    return formatted.toString();
-}

@@ -54,6 +54,7 @@ public:
 private:
     SwsContext*         scalerContext;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FFmpegVideoScaler)
 };
 
 #endif /* FILMSTRO_FFMPEG_FFMPEGVIDEOSCALER_H_INCLUDED */

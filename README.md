@@ -36,8 +36,8 @@ You can add an audio meter simply by adding the module https://github.com/ffAudi
 Current State
 =============
 
-It works for us with mp4 files. However, there are many formats, and many create
-problems, mostly to do with the sequence of packets / frames in the stream. To
+It works for us with mp4 files. However, there are many formats that theoretically should work, but some create
+problems, probably to do with the sequence of packets / frames in the stream. To
 improve this any insights and findings are very welcome.
 
 The VideoWriter is leftover from a previous test and will be completely rewritten.

@@ -30,6 +30,8 @@ To make
     make -j10
     make install
 
+You can add an audio meter simply by adding the module https://github.com/ffAudio/ff_meters to the projucer project.
+
 
 Current State
 =============

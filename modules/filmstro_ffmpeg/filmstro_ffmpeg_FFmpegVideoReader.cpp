@@ -351,6 +351,7 @@ bool FFmpegVideoReader::DecoderThread::loadMovieFile (const juce::File& inputFil
     audioStreamIdx = openCodecContext (&audioContext, AVMEDIA_TYPE_AUDIO, true);
     if (isPositiveAndBelow (audioStreamIdx, static_cast<int> (formatContext->nb_streams))) {
         audioContext->request_sample_fmt = AV_SAMPLE_FMT_FLTP;
+        //audioContext->request_channel_layout = AV_CH_LAYOUT_STEREO_DOWNMIX;
     }
 
     videoStreamIdx = openCodecContext (&videoContext, AVMEDIA_TYPE_VIDEO, true);
@@ -482,16 +483,18 @@ int FFmpegVideoReader::DecoderThread::decodeAudioPacket (AVPacket packet)
             int planar     = av_sample_fmt_is_planar (static_cast<AVSampleFormat> (audioFrame->format));
             int bps        = av_get_bytes_per_sample (static_cast<AVSampleFormat> (audioFrame->format));
             int channels   = av_get_channel_layout_nb_channels (audioFrame->channel_layout);
-            int numSamples = planar ? audioFrame->linesize[0] / (bps * channels) : audioFrame->nb_samples;
+            int numSamples = planar ? audioFrame->linesize[0] / (bps * 2) : audioFrame->nb_samples;
 
             int offset = (currentPTS - framePTSsecs) * audioContext->sample_rate;
             if (offset > 100) {
                 if (offset < numSamples) {
-                    AudioBuffer<float> subset ((float* const*)audioFrame->extended_data, channels, offset, numSamples-offset);
+                    outputNumSamples = numSamples-offset;
+                    AudioBuffer<float> subset ((float* const*)audioFrame->extended_data, channels, offset, outputNumSamples);
                     audioFifo.addToFifo (subset);
                 }
             }
             else {
+                outputNumSamples = numSamples;
                 audioFifo.addToFifo ((const float **)audioFrame->extended_data, numSamples);
             }
         }

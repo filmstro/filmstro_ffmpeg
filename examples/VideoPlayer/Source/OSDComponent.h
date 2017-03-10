@@ -211,14 +211,20 @@ public:
         lastMovement (Time::getMillisecondCounter())
         {
             Desktop::getInstance().addGlobalMouseListener (this);
-            startTimerHz (10);
+            startTimerHz (20);
         }
 
         void timerCallback () override
         {
-            if (Time::getMillisecondCounter() < lastMovement + 3000) {
+            const int64 relTime = Time::getMillisecondCounter() - lastMovement;
+            if (relTime < 2000) {
                 component.setVisible (true);
+                component.setAlpha (1.0);
                 component.setMouseCursor (MouseCursor::StandardCursorType::NormalCursor);
+            }
+            else if (relTime < 2300) {
+                component.setAlpha (1.0 - jmax (0.0, (relTime - 2000.0) / 300.0));
+                component.setMouseCursor (MouseCursor::StandardCursorType::NoCursor);
             }
             else {
                 component.setVisible (false);

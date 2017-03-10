@@ -480,10 +480,8 @@ int FFmpegVideoReader::DecoderThread::decodeAudioPacket (AVPacket packet)
         packet.size -= decoded;
 
         if (got_frame && decoded > 0 && audioFrame->extended_data != nullptr) {
-            int planar     = av_sample_fmt_is_planar (static_cast<AVSampleFormat> (audioFrame->format));
-            int bps        = av_get_bytes_per_sample (static_cast<AVSampleFormat> (audioFrame->format));
-            int channels   = av_get_channel_layout_nb_channels (audioFrame->channel_layout);
-            int numSamples = planar ? audioFrame->linesize[0] / (bps * 2) : audioFrame->nb_samples;
+            const int channels   = av_get_channel_layout_nb_channels (audioFrame->channel_layout);
+            const int numSamples = audioFrame->nb_samples;
 
             int offset = (currentPTS - framePTSsecs) * audioContext->sample_rate;
             if (offset > 100) {

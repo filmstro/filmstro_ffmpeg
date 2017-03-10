@@ -202,9 +202,9 @@ public:
 
     void presentationTimestampChanged (const double pts) override
     {
-        // a Slider::setValue can only occur on message thread, because it triggers a
-        // repaint, which fails an assert being the message thread
-        //osdComponent->setCurrentTime (videoReader->getCurrentTimeStamp());
+        MessageManager::callAsync (std::bind (&OSDComponent::setCurrentTime,
+                                              osdComponent.get(),
+                                              videoReader->getCurrentTimeStamp()));
     }
 
     void paint (Graphics& g) override

@@ -103,9 +103,6 @@ public:
             g.drawFittedText (dim, getLocalBounds(), Justification::topLeft, 1);
             g.drawFittedText (FFmpegVideoReader::formatTimeCode (videoReader->getCurrentTimeStamp ()),
                               getLocalBounds(), Justification::topRight, 1);
-
-            // is transparent
-            seekBar->setValue (videoReader->getCurrentTimeStamp(), dontSendNotification);
         }
     }
 

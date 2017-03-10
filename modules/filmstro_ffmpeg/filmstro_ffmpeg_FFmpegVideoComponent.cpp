@@ -53,7 +53,6 @@
 
 FFmpegVideoComponent::FFmpegVideoComponent ()
   : currentFrame (nullptr),
-    showOSD      (true),
     dirty        (true)
 {
     setOpaque (true);
@@ -144,10 +143,3 @@ FFmpegVideoReader* FFmpegVideoComponent::getVideoReader () const
 {
     return videoSource;
 }
-
-void FFmpegVideoComponent::setShowOSD (const bool shouldShowOSD)
-{
-    showOSD = shouldShowOSD;
-    dirty = true;
-}
-

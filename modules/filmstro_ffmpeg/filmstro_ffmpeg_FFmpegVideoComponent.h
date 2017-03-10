@@ -77,10 +77,6 @@ public:
     /** Get the video source for the component */
     FFmpegVideoReader* getVideoReader () const;
 
-    /** Turn the display of the OSD on and off */
-    void setShowOSD (const bool shouldShowOSD);
-
-
 private:
     /** Format the timecode in seconds */
     juce::String    formatTimeCode (const double tc);
@@ -93,8 +89,6 @@ private:
     juce::Image                             frameBuffer;
 
     FFmpegVideoScaler                       videoScaler;
-
-    bool                                    showOSD;
 
     bool                                    dirty;
 

@@ -108,7 +108,8 @@ public:
 
 #ifdef USE_FF_AUDIO_METERS
         meter = new LevelMeter ();
-        meter->getLookAndFeel()->setMeterColour (LevelMeterLookAndFeel::lmBackgroundColour, Colours::transparentBlack);
+        meter->getLookAndFeel()->setMeterColour (LevelMeterLookAndFeel::lmBackgroundColour,
+                                                 Colour::fromFloatRGBA (0.0f, 0.0f, 0.0f, 0.6f));
         meter->setMeterSource (&meterSource);
         addAndMakeVisible (meter);
 #endif

@@ -333,12 +333,13 @@ bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
             packet.size = 0;
             av_init_packet (&packet);
             packet.pts  = writePosition;
-
+            const uint64_t channelLayout = AV_CH_LAYOUT_STEREO;
+            const int numChannels = av_get_channel_layout_nb_channels (channelLayout);
             AVFrame* frame = av_frame_alloc ();
             frame->nb_samples   = numFrameSamples;
             frame->format       = AV_SAMPLE_FMT_FLTP;
-            frame->channel_layout = AV_CH_LAYOUT_STEREO;
-            frame->channels     = av_get_channel_layout_nb_channels (frame->channel_layout);
+            frame->channel_layout = channelLayout;
+            frame->channels     = numChannels;
             frame->pts          = writePosition;
 
             int bufferSize = av_samples_get_buffer_size (nullptr, frame->channels, frame->nb_samples, AV_SAMPLE_FMT_FLTP, 0);
@@ -352,20 +353,19 @@ bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
                                       bufferSize,
                                       0);
 
-#ifndef WIN32
-            // FIXME - doesn't compile on windows
-            float* sampleData [frame->channels];
+            float** sampleData = new float*[numChannels];
             for (int i=0; i < frame->channels; ++i) {
                 sampleData[i] = samples + i * bufferSize;
             }
             audioFifo.readFromFifo (sampleData, numFrameSamples);
-#endif
+
             int got_output = 0;
             if (avcodec_encode_audio2 (audioContext, &packet, frame, &got_output) >= 0) {
                 if (got_output) {
                     av_write_frame (formatContext, &packet);
                 }
             }
+            delete[] sampleData;
             //av_freep (buffer);
             av_packet_unref (&packet);
             

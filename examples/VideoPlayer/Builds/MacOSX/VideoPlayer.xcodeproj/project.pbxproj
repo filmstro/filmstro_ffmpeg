@@ -21,6 +21,7 @@
 		F44FA0356BEEB00E24508DEA = {isa = PBXBuildFile; fileRef = FE3B0EABAC5B604D8B17C310; };
 		2C9ACC9A77A6DBB928599446 = {isa = PBXBuildFile; fileRef = A603155DC3DD8BAF0EDB1907; };
 		1810045F911B5823D455D0C8 = {isa = PBXBuildFile; fileRef = 8231D1A89D06EAA5D786C274; };
+		0B1F910B6404C5D2D59AB44F = {isa = PBXBuildFile; fileRef = 174735E85B8049282945305A; };
 		010B3B5AD490BBC1AD321147 = {isa = PBXBuildFile; fileRef = BB17901282A81C872DFC2CEE; };
 		E63645A1C8C424D7D0080ED0 = {isa = PBXBuildFile; fileRef = DE0B3BED9AFCE69B5EB72BA9; };
 		F0E44B8A899D2B67D7810C4C = {isa = PBXBuildFile; fileRef = 046F81DE4290B867D5BA7707; };
@@ -39,6 +40,7 @@
 		FDBD25BBEDF412E5217E0603 = {isa = PBXBuildFile; fileRef = 6E3649B30615F1175CB71E49; };
 		046F81DE4290B867D5BA7707 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "filmstro_ffmpeg_FFmpegVideoScaler.cpp"; path = "../../JuceLibraryCode/filmstro_ffmpeg_FFmpegVideoScaler.cpp"; sourceTree = "SOURCE_ROOT"; };
 		1180B708B875E0FA415E7133 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "juce_gui_extra.mm"; path = "../../JuceLibraryCode/juce_gui_extra.mm"; sourceTree = "SOURCE_ROOT"; };
+		174735E85B8049282945305A = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "ff_meters_LevelMeter.cpp"; path = "../../JuceLibraryCode/ff_meters_LevelMeter.cpp"; sourceTree = "SOURCE_ROOT"; };
 		298413391BA71FD5A419CD37 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OSDComponent.h; path = ../../Source/OSDComponent.h; sourceTree = "SOURCE_ROOT"; };
 		29B50223CE43941FC0CA1624 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		355F91DC8B0E1A85540957EF = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "juce_audio_processors.mm"; path = "../../JuceLibraryCode/juce_audio_processors.mm"; sourceTree = "SOURCE_ROOT"; };
@@ -63,7 +65,7 @@
 		A2D9CA5D7B41F9847C02F428 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_core"; path = "../../../../../../../JUCE/modules/juce_core"; sourceTree = "SOURCE_ROOT"; };
 		A603155DC3DD8BAF0EDB1907 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Main.cpp; path = ../../Source/Main.cpp; sourceTree = "SOURCE_ROOT"; };
 		A65B83A034B6AA470FF1AFDD = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "juce_gui_basics.mm"; path = "../../JuceLibraryCode/juce_gui_basics.mm"; sourceTree = "SOURCE_ROOT"; };
-		AC0B8DE9B652EF02C72F4C85 = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoLibTest.app; sourceTree = "BUILT_PRODUCTS_DIR"; };
+		AC0B8DE9B652EF02C72F4C85 = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoPlayer.app; sourceTree = "BUILT_PRODUCTS_DIR"; };
 		AD6F7F0286872B0C35386079 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		B34A8933ACF20D55CFFB9064 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_opengl"; path = "../../../../../../../JUCE/modules/juce_opengl"; sourceTree = "SOURCE_ROOT"; };
 		B7D49C327BC87AE8859E61C7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "juce_core.mm"; path = "../../JuceLibraryCode/juce_core.mm"; sourceTree = "SOURCE_ROOT"; };
@@ -81,6 +83,7 @@
 		DA51479D3FE50C276EABAF4F = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_audio_devices"; path = "../../../../../../../JUCE/modules/juce_audio_devices"; sourceTree = "SOURCE_ROOT"; };
 		DC2A9B46D5E21291188CCC17 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_data_structures"; path = "../../../../../../../JUCE/modules/juce_data_structures"; sourceTree = "SOURCE_ROOT"; };
 		DE0B3BED9AFCE69B5EB72BA9 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "filmstro_ffmpeg_FFmpegVideoReader.cpp"; path = "../../JuceLibraryCode/filmstro_ffmpeg_FFmpegVideoReader.cpp"; sourceTree = "SOURCE_ROOT"; };
+		E4BAFA7C266446FB30C7DDBA = {isa = PBXFileReference; lastKnownFileType = file; name = "ff_meters"; path = "../../../../../ff_meters"; sourceTree = "SOURCE_ROOT"; };
 		E7926875BB65E08DBD347CEC = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "juce_graphics.mm"; path = "../../JuceLibraryCode/juce_graphics.mm"; sourceTree = "SOURCE_ROOT"; };
 		E8FAB93EAEAAAD6E1415F76A = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_audio_basics"; path = "../../../../../../../JUCE/modules/juce_audio_basics"; sourceTree = "SOURCE_ROOT"; };
 		F1B9DE4E37D3173B676C478B = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_gui_basics"; path = "../../../../../../../JUCE/modules/juce_gui_basics"; sourceTree = "SOURCE_ROOT"; };
@@ -93,6 +96,7 @@
 		B0617B191DE7E8002290DA7C = {isa = PBXGroup; children = (
 					239C2F3A1D1C9ACC1F7FECAB, ); name = VideoPlayer; sourceTree = "<group>"; };
 		D59E63176C7C2B243765D1DD = {isa = PBXGroup; children = (
+					E4BAFA7C266446FB30C7DDBA,
 					4097542D42FBFE74D71E1C7C,
 					DA400EE8E94E93956DDB9627,
 					E8FAB93EAEAAAD6E1415F76A,
@@ -109,6 +113,7 @@
 					B34A8933ACF20D55CFFB9064, ); name = "Juce Modules"; sourceTree = "<group>"; };
 		26571B325245E0DFF0B35CBE = {isa = PBXGroup; children = (
 					85B54901CCA0793E3ABBEEFF,
+					174735E85B8049282945305A,
 					BB17901282A81C872DFC2CEE,
 					DE0B3BED9AFCE69B5EB72BA9,
 					046F81DE4290B867D5BA7707,
@@ -163,7 +168,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"_DEBUG=1",
 					"DEBUG=1",
-					"FFMPEG_ROOT=/Volumes/data/Developer/Filmstro/OpenSource/ffmpeg/build",
+					"FFMPEG_ROOT=../../../../../ffmpeg/build",
 					"JUCER_XCODE_MAC_F6D2F4CF=1",
 					"JUCE_APP_VERSION=1.0.0",
 					"JUCE_APP_VERSION_HEX=0x10000",
@@ -175,13 +180,13 @@
 					"JucePlugin_Build_AAX=0",
 					"JucePlugin_Build_Standalone=0", );
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = ("../../JuceLibraryCode", "../../../../modules", "../../../../../../../JUCE/modules", "$(inherited)");
+				HEADER_SEARCH_PATHS = ("../../JuceLibraryCode", "../../../../../../OpenSource", "../../../../modules", "../../../../../../../JUCE/modules", "$(inherited)");
 				INFOPLIST_FILE = Info-App.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_CPLUSPLUSFLAGS = "-Wno-reserved-user-defined-literal -I/Volumes/data/Developer/Filmstro/OpenSource/ffmpeg/build/include";
-				OTHER_LDFLAGS = "-L/Volumes/data/Developer/Filmstro/OpenSource/ffmpeg/build/lib -lavformat -lavutil -lavcodec -lswscale -lswresample";
+				OTHER_CPLUSPLUSFLAGS = "-Wno-reserved-user-defined-literal -I../../../../../ffmpeg/build/include";
+				OTHER_LDFLAGS = "-L../../../../../ffmpeg/build/lib -lavformat -lavutil -lavcodec -lswscale -lswresample";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.VideoLibTest;
 				SDKROOT_ppc = macosx10.5; }; name = Debug; };
 		3018F4FA017C2934998F26DB = {isa = XCBuildConfiguration; buildSettings = {
@@ -197,7 +202,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"_NDEBUG=1",
 					"NDEBUG=1",
-					"FFMPEG_ROOT=/Volumes/data/Developer/Filmstro/OpenSource/ffmpeg/build",
+					"FFMPEG_ROOT=../../../../../ffmpeg/build",
 					"JUCER_XCODE_MAC_F6D2F4CF=1",
 					"JUCE_APP_VERSION=1.0.0",
 					"JUCE_APP_VERSION_HEX=0x10000",
@@ -210,13 +215,13 @@
 					"JucePlugin_Build_Standalone=0", );
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = ("../../JuceLibraryCode", "../../../../modules", "../../../../../../../JUCE/modules", "$(inherited)");
+				HEADER_SEARCH_PATHS = ("../../JuceLibraryCode", "../../../../../../OpenSource", "../../../../modules", "../../../../../../../JUCE/modules", "$(inherited)");
 				INFOPLIST_FILE = Info-App.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_CPLUSPLUSFLAGS = "-Wno-reserved-user-defined-literal -I/Volumes/data/Developer/Filmstro/OpenSource/ffmpeg/build/include";
-				OTHER_LDFLAGS = "-L/Volumes/data/Developer/Filmstro/OpenSource/ffmpeg/build/lib -lavformat -lavutil -lavcodec -lswscale -lswresample";
+				OTHER_CPLUSPLUSFLAGS = "-Wno-reserved-user-defined-literal -I../../../../../ffmpeg/build/include";
+				OTHER_LDFLAGS = "-L../../../../../ffmpeg/build/lib -lavformat -lavutil -lavcodec -lswscale -lswresample";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.VideoLibTest;
 				SDKROOT_ppc = macosx10.5; }; name = Release; };
 		CB15DC7BD7C85A27FED39D67 = {isa = XCBuildConfiguration; buildSettings = {
@@ -233,7 +238,7 @@
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "VideoLibTest";
+				PRODUCT_NAME = "VideoPlayer";
 				WARNING_CFLAGS = -Wreorder;
 				ZERO_LINK = NO; }; name = Debug; };
 		E8EACC2F0C79898CBEAA60EA = {isa = XCBuildConfiguration; buildSettings = {
@@ -248,7 +253,7 @@
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				PRODUCT_NAME = "VideoLibTest";
+				PRODUCT_NAME = "VideoPlayer";
 				WARNING_CFLAGS = -Wreorder;
 				ZERO_LINK = NO; }; name = Release; };
 		E0A5027F499D1116E4A2F1E9 = {isa = PBXTargetDependency; target = 0703591482F018AC57E1DE0A; };
@@ -263,6 +268,7 @@
 		A7ED28578EE2FC7BFAA84ACC = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (
 					2C9ACC9A77A6DBB928599446,
 					1810045F911B5823D455D0C8,
+					0B1F910B6404C5D2D59AB44F,
 					010B3B5AD490BBC1AD321147,
 					E63645A1C8C424D7D0080ED0,
 					F0E44B8A899D2B67D7810C4C,

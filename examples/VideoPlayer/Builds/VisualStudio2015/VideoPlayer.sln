@@ -14,6 +14,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{6E0D92
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Juce Modules", "Juce Modules", "{AD2C04D4-7DBA-314E-4D66-F2B021015F59}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ff_meters", "ff_meters", "{970B9C69-BCB5-CE1E-E0C6-D1C8879D5917}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\..\ff_meters\ff_meters.h = ..\..\..\..\..\ff_meters\ff_meters.h
+		..\..\..\..\..\ff_meters\ff_meters_LevelMeter.cpp = ..\..\..\..\..\ff_meters\ff_meters_LevelMeter.cpp
+		..\..\..\..\..\ff_meters\ff_meters_LevelMeter.h = ..\..\..\..\..\ff_meters\ff_meters_LevelMeter.h
+		..\..\..\..\..\ff_meters\ff_meters_LevelMeterSource.h = ..\..\..\..\..\ff_meters\ff_meters_LevelMeterSource.h
+		..\..\..\..\..\ff_meters\ff_meters_LookAndFeel.h = ..\..\..\..\..\ff_meters\ff_meters_LookAndFeel.h
+		..\..\..\..\..\ff_meters\ff_meters_LookAndFeelHorizontal.h = ..\..\..\..\..\ff_meters\ff_meters_LookAndFeelHorizontal.h
+		..\..\..\..\..\ff_meters\ff_meters_LookAndFeelVertical.h = ..\..\..\..\..\ff_meters\ff_meters_LookAndFeelVertical.h
+		..\..\..\..\..\ff_meters\ff_meters_LookAndFeelVintage.h = ..\..\..\..\..\ff_meters\ff_meters_LookAndFeelVintage.h
+		..\..\..\..\..\ff_meters\LICENSE.md = ..\..\..\..\..\ff_meters\LICENSE.md
+		..\..\..\..\..\ff_meters\README.md = ..\..\..\..\..\ff_meters\README.md
+		..\..\..\..\..\ff_meters\ff_meters.h = ..\..\..\..\..\ff_meters\ff_meters.h
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "filmstro_audiohelpers", "filmstro_audiohelpers", "{C89115D5-89D5-852F-A179-2B4DA6684CC0}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\..\..\modules\filmstro_audiohelpers\filmstro_audiohelpers.h = ..\..\..\..\modules\filmstro_audiohelpers\filmstro_audiohelpers.h
@@ -1636,6 +1651,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Juce Library Code", "Juce Library Code", "{B1E33BF4-EA8D-4371-52E9-7A62B5843215}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\JuceLibraryCode\AppConfig.h = ..\..\JuceLibraryCode\AppConfig.h
+		..\..\JuceLibraryCode\ff_meters_LevelMeter.cpp = ..\..\JuceLibraryCode\ff_meters_LevelMeter.cpp
 		..\..\JuceLibraryCode\filmstro_ffmpeg_FFmpegVideoComponent.cpp = ..\..\JuceLibraryCode\filmstro_ffmpeg_FFmpegVideoComponent.cpp
 		..\..\JuceLibraryCode\filmstro_ffmpeg_FFmpegVideoReader.cpp = ..\..\JuceLibraryCode\filmstro_ffmpeg_FFmpegVideoReader.cpp
 		..\..\JuceLibraryCode\filmstro_ffmpeg_FFmpegVideoScaler.cpp = ..\..\JuceLibraryCode\filmstro_ffmpeg_FFmpegVideoScaler.cpp
@@ -1671,6 +1687,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6E0D92C5-137E-1E4C-40F9-E8F31CFF8229} = {FB06CC8A-1A5D-E74F-6E3B-7D59B3EB9BDA}
+		{970B9C69-BCB5-CE1E-E0C6-D1C8879D5917} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{C89115D5-89D5-852F-A179-2B4DA6684CC0} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{39F0C260-9F2D-21D9-9E5E-46FF2D96D6DA} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{EBF046F5-7CA3-37D3-9D14-C9A7C0217454} = {7D98269F-FE96-6BA2-6982-95A094257474}

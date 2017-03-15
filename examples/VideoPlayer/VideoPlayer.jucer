@@ -14,12 +14,12 @@
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-reserved-user-defined-literal&#10;-I${FFMPEG_ROOT}/include"
                extraLinkerFlags="-L${FFMPEG_ROOT}/lib" externalLibraries="avformat&#10;avutil&#10;avcodec&#10;swscale&#10;swresample"
-               extraDefs="FFMPEG_ROOT=/Volumes/data/Developer/Filmstro/OpenSource/ffmpeg/build">
+               extraDefs="FFMPEG_ROOT=../../../../../ffmpeg/build">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="VideoLibTest"
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="VideoPlayer"
                        osxCompatibility="10.7 SDK" cppLanguageStandard="c++11" cppLibType="libc++"
                        customXcodeFlags=""/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="VideoLibTest"
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="VideoPlayer"
                        osxCompatibility="10.7 SDK" cppLanguageStandard="c++11" cppLibType="libc++"
                        customXcodeFlags=""/>
       </CONFIGURATIONS>
@@ -38,6 +38,7 @@
         <MODULEPATH id="juce_audio_utils" path="../../../../../JUCE/modules"/>
         <MODULEPATH id="filmstro_ffmpeg" path="../../modules"/>
         <MODULEPATH id="filmstro_audiohelpers" path="../../modules"/>
+        <MODULEPATH id="ff_meters" path="../../../../OpenSource"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2015 targetFolder="Builds/VisualStudio2015" extraCompilerFlags="-I../../../../../../FFmpeg/build/windows/include"
@@ -64,10 +65,12 @@
         <MODULEPATH id="juce_audio_utils" path="..\..\..\..\JUCE\modules"/>
         <MODULEPATH id="filmstro_ffmpeg" path="..\..\modules"/>
         <MODULEPATH id="filmstro_audiohelpers" path="..\..\modules"/>
+        <MODULEPATH id="ff_meters" path="../../../../OpenSource"/>
       </MODULEPATHS>
     </VS2015>
   </EXPORTFORMATS>
   <MODULES>
+    <MODULE id="ff_meters" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="filmstro_audiohelpers" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="filmstro_ffmpeg" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>

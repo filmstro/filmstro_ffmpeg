@@ -159,18 +159,19 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
             videoStreamIdx = formatContext->nb_streams - 1;
             AVCodec* encoder = avcodec_find_encoder (videoCodec);
             if (encoder) {
-                videoContext = stream->codec;
+                videoContext = avcodec_alloc_context3 (encoder);
+                videoContext->time_base = av_make_q (1, 25);
+                videoContext->pix_fmt      = pixelFormat;
+                videoContext->sample_aspect_ratio = pixelAspect;
+                videoContext->codec_type = encoder->type;
+                videoContext->codec_id  = videoCodec;
                 videoContext->width     = videoWidth;
                 videoContext->height    = videoHeight;
-                videoContext->pix_fmt   = pixelFormat;
-                videoContext->sample_aspect_ratio = pixelAspect;
-                videoContext->time_base = av_make_q (1, 25);
+                avcodec_parameters_from_context (stream->codecpar, videoContext);
 
                 AVDictionary* options = nullptr;
 
                 if (encoder->id == AV_CODEC_ID_H264) {
-                    av_opt_set (videoContext->priv_data, "preset", "medium", 0);
-                    av_opt_set (videoContext->priv_data, "tune",   "film", 0);
                     av_dict_set (&options, "preset", "medium", 0);
                     av_dict_set (&options, "tune", "film", 0);
                 }
@@ -195,12 +196,14 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
             audioStreamIdx = formatContext->nb_streams - 1;
             AVCodec* encoder = avcodec_find_encoder (audioCodec);
             if (encoder) {
-                audioContext = stream->codec;
-                audioContext->sample_fmt  = AV_SAMPLE_FMT_FLTP;
+                audioContext = avcodec_alloc_context3 (encoder);
+                audioContext->time_base = av_make_q (1, sampleRate);
                 audioContext->sample_rate = sampleRate;
+                audioContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
                 audioContext->channel_layout = channelLayout;
                 audioContext->channels = av_get_channel_layout_nb_channels (channelLayout);
-                audioContext->time_base   = AVRational ({1, sampleRate});
+                avcodec_parameters_from_context (stream->codecpar, audioContext);
+
                 int ret = avcodec_open2 (audioContext, encoder, NULL);
                 if (ret < 0) {
                     char codecName [256];
@@ -218,6 +221,8 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
     //    // FIXME: TODO
     //}
 
+    av_dump_format (formatContext, 0, outputFile.getFullPathName().toRawUTF8(), 1);
+
     if (!(formatContext->oformat->flags & AVFMT_NOFILE)) {
         if (avio_open (&formatContext->pb, outputFile.getFullPathName().toRawUTF8(), AVIO_FLAG_WRITE) < 0) {
             DBG ("Could not open output file '" + outputFile.getFullPathName() + "'");
@@ -226,15 +231,26 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
         }
     }
 
-    for (int i = 0; i < formatContext->nb_streams; i++) {
-        AVCodecContext* encoder = formatContext->streams [i]->codec;
-        if (formatContext->oformat->flags & AVFMT_GLOBALHEADER)
-            encoder->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+    if (formatContext->oformat->flags & AVFMT_GLOBALHEADER) {
+        if (videoContext) videoContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+        if (audioContext) audioContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+        if (subtitleContext) subtitleContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+    }
+
+    if (!(formatContext->oformat->flags & AVFMT_NOFILE)) {
+        int ret = avio_open(&formatContext->pb, outputFile.getFullPathName().toRawUTF8(), AVIO_FLAG_WRITE);
+        if (ret < 0) {
+            av_log(NULL, AV_LOG_ERROR, "Could not open output file '%s'", outputFile.getFullPathName().toRawUTF8());
+            closeContexts();
+            return false;
+        }
     }
 
     int ret = avformat_write_header (formatContext, NULL);
     if (ret < 0) {
         DBG ("Error occurred when opening output file");
+        closeContexts();
+        return false;
     }
 
     return true;
@@ -258,11 +274,14 @@ void FFmpegVideoWriter::closeContexts ()
 {
     avformat_free_context (formatContext);
     videoStreamIdx  = -1;
-    videoContext    = nullptr;
     audioStreamIdx  = -1;
-    audioContext    = nullptr;
     subtitleStreamIdx = -1;
+    videoContext = nullptr;
+    audioContext = nullptr;
     subtitleContext = nullptr;
+    avcodec_free_context (&videoContext);
+    avcodec_free_context (&audioContext);
+    avcodec_free_context (&subtitleContext);
     formatContext   = nullptr;
     writePosition   = 0;
 }
@@ -275,7 +294,8 @@ void FFmpegVideoWriter::writeNextAudioBlock (juce::AudioSourceChannelInfo& info)
 
 void FFmpegVideoWriter::writeNextVideoFrame (const AVFrame* frame)
 {
-    if (videoStreamIdx >= 0) {
+    if (formatContext &&
+        isPositiveAndBelow (videoStreamIdx, static_cast<int> (formatContext->nb_streams))) {
         AVPacket packet;
         packet.data = nullptr;
         packet.size = 0;
@@ -300,57 +320,61 @@ void FFmpegVideoWriter::writeNextVideoFrame (const juce::Image& image, const AVR
 
 bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
 {
-    if (!formatContext || audioStreamIdx < 0) return false;
+    if (formatContext &&
+        isPositiveAndBelow (audioStreamIdx, static_cast<int> (formatContext->nb_streams)))
+    {
 
-    int numFrameSamples  = 1024;
+        int numFrameSamples  = 1024;
 
-    if (audioFifo.getNumReady() >= numFrameSamples || flush) {
+        if (audioFifo.getNumReady() >= numFrameSamples || flush) {
 
-        AVPacket packet;
-        packet.data = nullptr;
-        packet.size = 0;
-        av_init_packet (&packet);
-        packet.pts  = writePosition;
+            AVPacket packet;
+            packet.data = nullptr;
+            packet.size = 0;
+            av_init_packet (&packet);
+            packet.pts  = writePosition;
 
-        AVFrame* frame = av_frame_alloc ();
-        frame->nb_samples   = numFrameSamples;
-        frame->format       = AV_SAMPLE_FMT_FLTP;
-        frame->channel_layout = AV_CH_LAYOUT_STEREO;
-        frame->channels     = av_get_channel_layout_nb_channels (frame->channel_layout);
-        frame->pts          = writePosition;
+            AVFrame* frame = av_frame_alloc ();
+            frame->nb_samples   = numFrameSamples;
+            frame->format       = AV_SAMPLE_FMT_FLTP;
+            frame->channel_layout = AV_CH_LAYOUT_STEREO;
+            frame->channels     = av_get_channel_layout_nb_channels (frame->channel_layout);
+            frame->pts          = writePosition;
 
-        int bufferSize = av_samples_get_buffer_size (nullptr, frame->channels, frame->nb_samples, AV_SAMPLE_FMT_FLTP, 0);
-        void* buffer = av_malloc (bufferSize);
-        float* samples = static_cast<float*> (buffer);
+            int bufferSize = av_samples_get_buffer_size (nullptr, frame->channels, frame->nb_samples, AV_SAMPLE_FMT_FLTP, 0);
+            void* buffer = av_malloc (bufferSize);
+            float* samples = static_cast<float*> (buffer);
 
-        avcodec_fill_audio_frame (frame,
-                                  frame->channels,
-                                  static_cast<enum AVSampleFormat> (frame->format),
-                                  static_cast<const uint8_t*> (buffer),
-                                  bufferSize,
-                                  0);
+            avcodec_fill_audio_frame (frame,
+                                      frame->channels,
+                                      static_cast<enum AVSampleFormat> (frame->format),
+                                      static_cast<const uint8_t*> (buffer),
+                                      bufferSize,
+                                      0);
 
 #ifndef WIN32
-// FIXME - doesn't compile on windows
-        float* sampleData [frame->channels];
-        for (int i=0; i < frame->channels; ++i) {
-            sampleData[i] = samples + i * audioContext->frame_size;
-        }
-        audioFifo.readFromFifo (sampleData, numFrameSamples);
-#endif
-        int got_output = 0;
-        if (avcodec_encode_audio2 (audioContext, &packet, frame, &got_output) >= 0) {
-            if (got_output) {
-                av_write_frame (formatContext, &packet);
+            // FIXME - doesn't compile on windows
+            float* sampleData [frame->channels];
+            for (int i=0; i < frame->channels; ++i) {
+                sampleData[i] = samples + i * bufferSize;
             }
+            audioFifo.readFromFifo (sampleData, numFrameSamples);
+#endif
+            int got_output = 0;
+            if (avcodec_encode_audio2 (audioContext, &packet, frame, &got_output) >= 0) {
+                if (got_output) {
+                    av_write_frame (formatContext, &packet);
+                }
+            }
+            //av_freep (buffer);
+            av_packet_unref (&packet);
+            
+            writePosition += numFrameSamples;
         }
-        //av_freep (buffer);
-        av_packet_unref (&packet);
-
-        writePosition += numFrameSamples;
+        
+        return true;
     }
-
-    return true;
+    return false;
 }
 
 void FFmpegVideoWriter::displayNewFrame (const AVFrame* frame)

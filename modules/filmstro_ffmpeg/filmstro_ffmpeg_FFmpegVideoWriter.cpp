@@ -237,6 +237,12 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
         if (subtitleContext) subtitleContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
     }
 
+    if (!videoContext && !audioContext && !subtitleContext) {
+        DBG ("No stream provided to encode");
+        closeContexts();
+        return false;
+    }
+
     if (!(formatContext->oformat->flags & AVFMT_NOFILE)) {
         int ret = avio_open(&formatContext->pb, outputFile.getFullPathName().toRawUTF8(), AVIO_FLAG_WRITE);
         if (ret < 0) {
@@ -265,7 +271,8 @@ void FFmpegVideoWriter::finishWriting ()
 {
     //FIXME: flush all buffers
 
-    av_write_trailer (formatContext);
+    if (formatContext)
+        av_write_trailer (formatContext);
 
     closeContexts();
 }
@@ -302,6 +309,7 @@ void FFmpegVideoWriter::writeNextVideoFrame (const AVFrame* frame)
         av_init_packet (&packet);
 
         packet.pts = frame->pts;
+        DBG ("Start writing video frame");
 
         int got_output = 0;
         if (avcodec_encode_video2 (videoContext, &packet, frame, &got_output) >= 0) {
@@ -340,7 +348,7 @@ bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
             frame->channel_layout = AV_CH_LAYOUT_STEREO;
             frame->channels     = av_get_channel_layout_nb_channels (frame->channel_layout);
             frame->pts          = writePosition;
-
+            DBG ("Start writing audio frame");
             int bufferSize = av_samples_get_buffer_size (nullptr, frame->channels, frame->nb_samples, AV_SAMPLE_FMT_FLTP, 0);
             void* buffer = av_malloc (bufferSize);
             float* samples = static_cast<float*> (buffer);
@@ -356,10 +364,11 @@ bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
             // FIXME - doesn't compile on windows
             float* sampleData [frame->channels];
             for (int i=0; i < frame->channels; ++i) {
-                sampleData[i] = samples + i * bufferSize;
+                sampleData[i] = samples + i * frame->nb_samples * 4;
             }
             audioFifo.readFromFifo (sampleData, numFrameSamples);
 #endif
+            
             int got_output = 0;
             if (avcodec_encode_audio2 (audioContext, &packet, frame, &got_output) >= 0) {
                 if (got_output) {

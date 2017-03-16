@@ -70,6 +70,9 @@ public:
     /** Set the pixel aspect ratio as fraction before opening a file */
     void setPixelAspect (const int num, const int den);
 
+    /** Set the timebase for the stream, provide either AVMEDIA_TYPE_VIDEO, AVMEDIA_TYPE_AUDIO, AVMEDIA_TYPE_SUBTITLE */
+    void setTimeBase (AVMediaType type, AVRational timebase);
+
     /** copies settings from a context (e.g. FFmpegVideoReader) to the writer */
     void copySettingsFromContext (const AVCodecContext* context);
 
@@ -121,6 +124,10 @@ private:
     int                     videoStreamIdx;
     int                     audioStreamIdx;
     int                     subtitleStreamIdx;
+
+    AVRational              videoTimeBase;
+    AVRational              audioTimeBase;
+    AVRational              subtitleTimeBase;
 
     int                     sampleRate;
     int64_t                 channelLayout;

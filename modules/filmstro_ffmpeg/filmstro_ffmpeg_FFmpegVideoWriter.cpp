@@ -62,7 +62,9 @@ FFmpegVideoWriter::FFmpegVideoWriter()
     audioFifo       (2, 8192)
 {
     formatContext = nullptr;
-
+    videoTimeBase = AV_TIME_BASE_Q;
+    audioTimeBase = av_make_q (sampleRate, 1);
+    subtitleTimeBase = AV_TIME_BASE_Q;
     av_register_all();
 }
 
@@ -88,6 +90,7 @@ void FFmpegVideoWriter::setSubtitleCodec (const AVCodecID codec)
 void FFmpegVideoWriter::setSampleRate (const int newSampleRate)
 {
     sampleRate = newSampleRate;
+    audioTimeBase = av_make_q (newSampleRate, 1);
 }
 
 void FFmpegVideoWriter::setVideoSize (const int width, const int height)
@@ -103,8 +106,24 @@ void FFmpegVideoWriter::setPixelFormat (const AVPixelFormat format)
 
 void FFmpegVideoWriter::setPixelAspect (const int num, const int den)
 {
-    pixelAspect.num = num;
-    pixelAspect.den = den;
+    pixelAspect = av_make_q (num, den);
+}
+
+void FFmpegVideoWriter::setTimeBase (AVMediaType type, AVRational timebase)
+{
+    switch (type) {
+        case AVMEDIA_TYPE_VIDEO:
+            videoTimeBase = timebase;
+            break;
+        case AVMEDIA_TYPE_AUDIO:
+            audioTimeBase = timebase;
+            break;
+        case AVMEDIA_TYPE_SUBTITLE:
+            subtitleTimeBase = timebase;
+            break;
+        default:
+            break;
+    }
 }
 
 void FFmpegVideoWriter::copySettingsFromContext (const AVCodecContext* context)
@@ -116,6 +135,7 @@ void FFmpegVideoWriter::copySettingsFromContext (const AVCodecContext* context)
             videoHeight = context->height;
             pixelFormat = context->pix_fmt;
             pixelAspect = context->sample_aspect_ratio;
+            videoTimeBase = context->time_base;
         }
         else if (context->codec_type == AVMEDIA_TYPE_AUDIO) {
             audioCodec  = context->codec_id;
@@ -160,8 +180,8 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
             AVCodec* encoder = avcodec_find_encoder (videoCodec);
             if (encoder) {
                 videoContext = avcodec_alloc_context3 (encoder);
-                videoContext->time_base = av_make_q (1, 25);
-                videoContext->pix_fmt      = pixelFormat;
+                videoContext->time_base = videoTimeBase;
+                videoContext->pix_fmt   = pixelFormat;
                 videoContext->sample_aspect_ratio = pixelAspect;
                 videoContext->codec_type = encoder->type;
                 videoContext->codec_id  = videoCodec;
@@ -197,7 +217,7 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
             AVCodec* encoder = avcodec_find_encoder (audioCodec);
             if (encoder) {
                 audioContext = avcodec_alloc_context3 (encoder);
-                audioContext->time_base = av_make_q (1, sampleRate);
+                audioContext->time_base = audioTimeBase;
                 audioContext->sample_rate = sampleRate;
                 audioContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
                 audioContext->channel_layout = channelLayout;

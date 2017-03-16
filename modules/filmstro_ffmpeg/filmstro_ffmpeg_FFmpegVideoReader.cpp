@@ -211,6 +211,9 @@ void FFmpegVideoReader::getNextAudioBlock (const juce::AudioSourceChannelInfo &b
 
     // this triggers also reading of new video frame
     decoder.setCurrentPTS (static_cast<double>(nextReadPos) / sampleRate);
+#ifdef DEBUG_LOG_PACKETS
+    DBG ("Play audio block: " + String (nextReadPos) + " PTS: " + String (static_cast<double>(nextReadPos) / sampleRate));
+#endif // DEBUG_LOG_PACKETS
 
     if (audioFifo.getNumReady() >= bufferToFill.numSamples) {
         audioFifo.readFromFifo (bufferToFill);

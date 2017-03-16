@@ -351,19 +351,18 @@ bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
             frame->pts          = writePosition;
             DBG ("Start writing audio frame");
             int bufferSize = av_samples_get_buffer_size (nullptr, frame->channels, frame->nb_samples, AV_SAMPLE_FMT_FLTP, 0);
-            void* buffer = av_malloc (bufferSize);
-            float* samples = static_cast<float*> (buffer);
+            float* samples = static_cast<float*> (av_malloc (bufferSize));
 
             avcodec_fill_audio_frame (frame,
                                       frame->channels,
                                       static_cast<enum AVSampleFormat> (frame->format),
-                                      static_cast<const uint8_t*> (buffer),
+                                      (const uint8_t*) (samples),
                                       bufferSize,
                                       0);
 
             float** sampleData = new float*[numChannels];
             for (int i=0; i < frame->channels; ++i) {
-                sampleData[i] = samples + i * frame->nb_samples * 4;
+                sampleData[i] = samples + i * frame->nb_samples;
             }
             audioFifo.readFromFifo (sampleData, numFrameSamples);
 

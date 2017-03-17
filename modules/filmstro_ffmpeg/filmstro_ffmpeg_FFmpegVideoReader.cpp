@@ -364,6 +364,8 @@ bool FFmpegVideoReader::DecoderThread::loadMovieFile (const juce::File& inputFil
                                                                      videoContext->pix_fmt);
     }
 
+    av_dump_format (formatContext, 0, inputFile.getFullPathName().toRawUTF8(), 0);
+
     videoListeners.call (&FFmpegVideoListener::videoFileChanged, inputFile);
 
     startThread ();

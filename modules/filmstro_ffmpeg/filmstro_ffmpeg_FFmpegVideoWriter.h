@@ -87,7 +87,7 @@ public:
     void writeNextAudioBlock (juce::AudioSourceChannelInfo& info);
 
     /** Write the next video frame. The timestamp has to be set in the frame. */
-    void writeNextVideoFrame (const AVFrame* frame);
+    void writeNextVideoFrame (AVFrame* frame);
 
     /** Write the next video frame. */
     void writeNextVideoFrame (const juce::Image& image, const AVRational timestamp);
@@ -106,6 +106,8 @@ private:
 
     /** Write audio data to frame, if there is enough. If flush is set to true, it will append silence to fill the last frame. */
     bool writeAudioFrame (const bool flush=false);
+
+    int encode_write_frame (AVFrame *frame, AVMediaType type, int *got_frame);
 
     // ==============================================================================
 

@@ -187,6 +187,7 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
                 videoContext->codec_id  = videoCodec;
                 videoContext->width     = videoWidth;
                 videoContext->height    = videoHeight;
+                videoContext->bit_rate  = 400000;
                 avcodec_parameters_from_context (stream->codecpar, videoContext);
 
                 AVDictionary* options = nullptr;
@@ -222,6 +223,9 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
                 audioContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
                 audioContext->channel_layout = channelLayout;
                 audioContext->channels = av_get_channel_layout_nb_channels (channelLayout);
+                audioContext->bit_rate = 64000;
+                audioContext->frame_size = 1024;
+                audioContext->bits_per_raw_sample = 4;
                 avcodec_parameters_from_context (stream->codecpar, audioContext);
 
                 int ret = avcodec_open2 (audioContext, encoder, NULL);
@@ -291,9 +295,39 @@ void FFmpegVideoWriter::finishWriting ()
 {
     //FIXME: flush all buffers
 
-    if (formatContext)
-        av_write_trailer (formatContext);
+    if (formatContext) {
+        AVMediaType mediaType;
+        for (int idx=0; idx < formatContext->nb_streams; ++idx) {
+            int ret=1;
+            int got_frame;
+            if (idx == videoStreamIdx) {
+                if (!(videoContext->codec->capabilities &
+                      AV_CODEC_CAP_DELAY))
+                    break;
+                mediaType = AVMEDIA_TYPE_VIDEO;
+            }
+            else if (idx == audioStreamIdx) {
+                if (!(audioContext->codec->capabilities &
+                      AV_CODEC_CAP_DELAY))
+                    break;
+                mediaType = AVMEDIA_TYPE_AUDIO;
+            }
+            else {
+                break;
+            }
 
+            while (ret > 0) {
+                av_log(NULL, AV_LOG_INFO, "Flushing stream #%u encoder\n", idx);
+                ret = encode_write_frame (NULL, mediaType, &got_frame);
+                if (ret < 0)
+                    break;
+                if (!got_frame)
+                    ret = 0;
+            }
+        }
+
+        av_write_trailer (formatContext);
+    }
     closeContexts();
 }
 
@@ -319,26 +353,15 @@ void FFmpegVideoWriter::writeNextAudioBlock (juce::AudioSourceChannelInfo& info)
     writeAudioFrame (false);
 }
 
-void FFmpegVideoWriter::writeNextVideoFrame (const AVFrame* frame)
+void FFmpegVideoWriter::writeNextVideoFrame (AVFrame* frame)
 {
     if (formatContext &&
         isPositiveAndBelow (videoStreamIdx, static_cast<int> (formatContext->nb_streams))) {
-        AVPacket packet;
-        packet.data = nullptr;
-        packet.size = 0;
-        av_init_packet (&packet);
 
-        packet.pts = frame->pts;
-        DBG ("Start writing video frame");
-
+        DBG ("Start writing video frame, pts: " + juce::String (frame->pts));
         int got_output = 0;
-        if (avcodec_encode_video2 (videoContext, &packet, frame, &got_output) >= 0) {
-            if (got_output) {
-                av_write_frame (formatContext, &packet);
-            }
-        }
-        av_packet_unref (&packet);
-    }
+        encode_write_frame (frame, AVMEDIA_TYPE_VIDEO, &got_output);
+   }
 }
 
 void FFmpegVideoWriter::writeNextVideoFrame (const juce::Image& image, const AVRational timestamp)
@@ -355,24 +378,18 @@ bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
         int numFrameSamples  = 1024;
 
         if (audioFifo.getNumReady() >= numFrameSamples || flush) {
-
-            AVPacket packet;
-            packet.data = nullptr;
-            packet.size = 0;
-            av_init_packet (&packet);
-            packet.pts  = writePosition;
             const uint64_t channelLayout = AV_CH_LAYOUT_STEREO;
             const int numChannels = av_get_channel_layout_nb_channels (channelLayout);
             AVFrame* frame = av_frame_alloc ();
+            av_frame_make_writable (frame);
             frame->nb_samples   = numFrameSamples;
             frame->format       = AV_SAMPLE_FMT_FLTP;
             frame->channel_layout = channelLayout;
             frame->channels     = numChannels;
             frame->pts          = writePosition;
-            DBG ("Start writing audio frame");
+            DBG ("Start writing audio frame, pts: " + String (writePosition));
             int bufferSize = av_samples_get_buffer_size (nullptr, frame->channels, frame->nb_samples, AV_SAMPLE_FMT_FLTP, 0);
             float* samples = static_cast<float*> (av_malloc (bufferSize));
-
             avcodec_fill_audio_frame (frame,
                                       frame->channels,
                                       static_cast<enum AVSampleFormat> (frame->format),
@@ -387,15 +404,11 @@ bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
             audioFifo.readFromFifo (sampleData, numFrameSamples);
 
             int got_output = 0;
-            if (avcodec_encode_audio2 (audioContext, &packet, frame, &got_output) >= 0) {
-                if (got_output) {
-                    av_write_frame (formatContext, &packet);
-                }
-            }
+            encode_write_frame (frame, AVMEDIA_TYPE_AUDIO, &got_output);
+
             delete[] sampleData;
             //av_freep (buffer);
-            av_packet_unref (&packet);
-            
+
             writePosition += numFrameSamples;
         }
         
@@ -404,10 +417,68 @@ bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
     return false;
 }
 
+int FFmpegVideoWriter::encode_write_frame(AVFrame *frame, AVMediaType type, int *got_frame) {
+    if (formatContext) {
+        int ret;
+        int got_frame_local;
+        AVPacket enc_pkt;
+        if (!got_frame)
+            got_frame = &got_frame_local;
+        av_log(NULL, AV_LOG_INFO, "Encoding frame\n");
+        /* encode filtered frame */
+        enc_pkt.data = NULL;
+        enc_pkt.size = 0;
+        av_init_packet(&enc_pkt);
+        if (type == AVMEDIA_TYPE_VIDEO) {
+            ret = avcodec_encode_video2 (videoContext, &enc_pkt, frame, got_frame);
+            av_frame_free (&frame);
+            enc_pkt.stream_index = videoStreamIdx;
+            av_packet_rescale_ts(&enc_pkt,
+                                 videoContext->time_base,
+                                 formatContext->streams [videoStreamIdx]->time_base);
+            av_frame_free (&frame);
+        }
+        else if (type == AVMEDIA_TYPE_AUDIO) {
+            ret = avcodec_encode_audio2 (audioContext, &enc_pkt, frame, got_frame);
+            av_frame_free (&frame);
+            enc_pkt.stream_index = audioStreamIdx;
+            av_packet_rescale_ts(&enc_pkt,
+                                 audioContext->time_base,
+                                 formatContext->streams [audioStreamIdx]->time_base);
+        }
+        else {
+            // the AVFrame only holds audio or video data, so you shouldn't call that
+            // function with a type other than AVMEDIA_TYPE_VIDEO or AVMEDIA_TYPE_AUDIO
+            jassertfalse;
+        }
+
+        if (ret < 0)
+            return ret;
+        if (!(*got_frame))
+            return 0;
+
+        av_log(NULL, AV_LOG_DEBUG, "Muxing frame\n");
+        /* mux encoded frame */
+        ret = av_interleaved_write_frame (formatContext, &enc_pkt);
+        return ret;
+    }
+    return 0;
+}
+
 void FFmpegVideoWriter::displayNewFrame (const AVFrame* frame)
 {
-    // simply forward it to ffmpeg
-    writeNextVideoFrame (frame);
+    // forward a copy to ffmpeg, the writer will dispose the frame...
+    AVFrame* frameCopy = av_frame_alloc();
+    av_frame_copy_props (frameCopy, frame);
+    av_frame_copy (frameCopy, frame);
+    frameCopy->width = frame->width;
+    frameCopy->height = frame->height;
+    frameCopy->format = frame->format;
+    frameCopy->colorspace = frame->colorspace;
+    frameCopy->sample_aspect_ratio = frame->sample_aspect_ratio;
+    frameCopy->color_range = frame->color_range;
+    frameCopy->pts = frame->pts;
+    writeNextVideoFrame (frameCopy);
 }
 
 

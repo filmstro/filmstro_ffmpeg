@@ -135,7 +135,12 @@ void FFmpegVideoWriter::copySettingsFromContext (const AVCodecContext* context)
             videoHeight = context->height;
             pixelFormat = context->pix_fmt;
             pixelAspect = context->sample_aspect_ratio;
-            videoTimeBase = context->time_base;
+            if (context->framerate.num != 0) {
+                videoTimeBase = av_inv_q (context->framerate);
+            }
+            else {
+                videoTimeBase = av_make_q (1, 24000);
+            }
         }
         else if (context->codec_type == AVMEDIA_TYPE_AUDIO) {
             audioCodec  = context->codec_id;
@@ -179,6 +184,7 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
             videoStreamIdx = formatContext->nb_streams - 1;
             AVCodec* encoder = avcodec_find_encoder (videoCodec);
             if (encoder) {
+                stream->time_base = videoTimeBase;
                 videoContext = avcodec_alloc_context3 (encoder);
                 videoContext->time_base = videoTimeBase;
                 videoContext->pix_fmt   = pixelFormat;
@@ -369,17 +375,16 @@ void FFmpegVideoWriter::writeNextVideoFrame (const juce::Image& image, const AVR
 
 bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
 {
-    if (formatContext &&
+    if (formatContext && audioContext &&
         isPositiveAndBelow (audioStreamIdx, static_cast<int> (formatContext->nb_streams)))
     {
 
-        int numFrameSamples  = 1024;
+        int numFrameSamples  = audioContext->frame_size;
 
         if (audioFifo.getNumReady() >= numFrameSamples || flush) {
             const uint64_t channelLayout = AV_CH_LAYOUT_STEREO;
             const int numChannels = av_get_channel_layout_nb_channels (channelLayout);
             AVFrame* frame = av_frame_alloc ();
-            av_frame_make_writable (frame);
             frame->nb_samples   = numFrameSamples;
             frame->format       = AV_SAMPLE_FMT_FLTP;
             frame->channel_layout = channelLayout;

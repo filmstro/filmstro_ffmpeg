@@ -63,7 +63,7 @@ FFmpegVideoWriter::FFmpegVideoWriter()
 {
     formatContext = nullptr;
     videoTimeBase = AV_TIME_BASE_Q;
-    audioTimeBase = av_make_q (sampleRate, 1);
+    audioTimeBase = av_make_q (1, sampleRate);
     subtitleTimeBase = AV_TIME_BASE_Q;
     av_register_all();
 }
@@ -90,7 +90,7 @@ void FFmpegVideoWriter::setSubtitleCodec (const AVCodecID codec)
 void FFmpegVideoWriter::setSampleRate (const int newSampleRate)
 {
     sampleRate = newSampleRate;
-    audioTimeBase = av_make_q (newSampleRate, 1);
+    audioTimeBase = av_make_q (1, newSampleRate);
 }
 
 void FFmpegVideoWriter::setVideoSize (const int width, const int height)
@@ -293,8 +293,6 @@ void FFmpegVideoWriter::closeMovieFile ()
 
 void FFmpegVideoWriter::finishWriting ()
 {
-    //FIXME: flush all buffers
-
     if (formatContext) {
         AVMediaType mediaType;
         for (int idx=0; idx < formatContext->nb_streams; ++idx) {
@@ -431,7 +429,6 @@ int FFmpegVideoWriter::encode_write_frame(AVFrame *frame, AVMediaType type, int 
         av_init_packet(&enc_pkt);
         if (type == AVMEDIA_TYPE_VIDEO) {
             ret = avcodec_encode_video2 (videoContext, &enc_pkt, frame, got_frame);
-            av_frame_free (&frame);
             enc_pkt.stream_index = videoStreamIdx;
             av_packet_rescale_ts(&enc_pkt,
                                  videoContext->time_base,
@@ -458,6 +455,7 @@ int FFmpegVideoWriter::encode_write_frame(AVFrame *frame, AVMediaType type, int 
             return 0;
 
         av_log(NULL, AV_LOG_DEBUG, "Muxing frame\n");
+        DBG ("Muxing frame");
         /* mux encoded frame */
         ret = av_interleaved_write_frame (formatContext, &enc_pkt);
         return ret;

@@ -181,6 +181,9 @@ public:
 
     void    closeMovieFile ();
 
+    /** Returns the currently opened video file */
+    juce::File getVideoFileName () const;
+
     /** Return the framerate. If framerate in the decoder context is not set,
      this will return the timebase of the video stream. */
     double  getFramesPerSecond () const;

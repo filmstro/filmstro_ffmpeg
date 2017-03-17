@@ -81,12 +81,22 @@ bool FFmpegVideoReader::loadMovieFile (const File& inputFile)
         return false;
     }
 
-    return decoder.loadMovieFile (inputFile);
+    if (decoder.loadMovieFile (inputFile)) {
+        videoFileName = inputFile;
+        return true;
+    }
+    return false;
 }
 
 void FFmpegVideoReader::closeMovieFile ()
 {
     decoder.closeMovieFile();
+    videoFileName = File();
+}
+
+juce::File FFmpegVideoReader::getVideoFileName () const
+{
+    return videoFileName;
 }
 
 double FFmpegVideoReader::getFramesPerSecond () const

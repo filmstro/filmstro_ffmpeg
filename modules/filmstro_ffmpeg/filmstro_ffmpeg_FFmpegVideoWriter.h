@@ -90,7 +90,7 @@ public:
     void writeNextVideoFrame (AVFrame* frame);
 
     /** Write the next video frame. */
-    void writeNextVideoFrame (const juce::Image& image, const AVRational timestamp);
+    void writeNextVideoFrame (const juce::Image& image, const juce::int64 timestamp);
 
     /** This callback receives frames from e.g. the FFmpegVideoReader to be written to the video file. 
      The timestamp has to be set in the frame. */
@@ -141,6 +141,8 @@ private:
 
     // buffer audio to match the video's audio frame size
     AudioBufferFIFO<float>  audioFifo;
+
+    juce::ScopedPointer<FFmpegVideoScaler> videoScaler;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FFmpegVideoWriter)
 };

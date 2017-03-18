@@ -93,3 +93,24 @@ void FFmpegVideoScaler::convertFrameToImage (juce::Image& image, const AVFrame* 
                    linesizes);
     }
 }
+
+void FFmpegVideoScaler::convertImageToFrame (AVFrame* frame, const juce::Image& image)
+{
+    if (scalerContext) {
+        Image::BitmapData data (image, 0, 0,
+                                image.getWidth(),
+                                image.getHeight());
+
+        uint8_t* source[4] = {data.data, data.data, data.data, data.data};
+        int bitsPerLine = 4 * image.getWidth();
+        int linesizes[4] = {bitsPerLine, bitsPerLine, bitsPerLine, bitsPerLine};
+
+        sws_scale (scalerContext,
+                   source,
+                   linesizes,
+                   0,
+                   image.getHeight(),
+                   frame->data,
+                   frame->linesize);
+    }
+}

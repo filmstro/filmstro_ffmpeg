@@ -58,11 +58,11 @@ FFmpegVideoWriter::FFmpegVideoWriter()
     videoWidth      (0),
     videoHeight     (0),
     pixelFormat     (AV_PIX_FMT_NONE),
-    pixelAspect     (AVRational({1, 1})),
+    pixelAspect     (av_make_q (1, 1)),
     audioFifo       (2, 8192)
 {
     formatContext = nullptr;
-    videoTimeBase = AV_TIME_BASE_Q;
+    videoTimeBase = av_make_q (1, 24);
     audioTimeBase = av_make_q (1, sampleRate);
     subtitleTimeBase = AV_TIME_BASE_Q;
     av_register_all();
@@ -136,10 +136,12 @@ void FFmpegVideoWriter::copySettingsFromContext (const AVCodecContext* context)
             pixelFormat = context->pix_fmt;
             pixelAspect = context->sample_aspect_ratio;
             if (context->framerate.num != 0) {
+                // preferred way
                 videoTimeBase = av_inv_q (context->framerate);
             }
-            else {
-                videoTimeBase = av_make_q (1, 24000);
+            else if (context->time_base.num > 0) {
+                // some decoders don't set framerate but might provide a time_base
+                videoTimeBase = context->time_base;
             }
         }
         else if (context->codec_type == AVMEDIA_TYPE_AUDIO) {
@@ -348,6 +350,7 @@ void FFmpegVideoWriter::closeContexts ()
     avcodec_free_context (&audioContext);
     avcodec_free_context (&subtitleContext);
     formatContext   = nullptr;
+    videoScaler     = nullptr;
     writePosition   = 0;
 }
 
@@ -368,9 +371,36 @@ void FFmpegVideoWriter::writeNextVideoFrame (AVFrame* frame)
    }
 }
 
-void FFmpegVideoWriter::writeNextVideoFrame (const juce::Image& image, const AVRational timestamp)
+void FFmpegVideoWriter::writeNextVideoFrame (const juce::Image& image, const juce::int64 timestamp)
 {
-    // TODO: use scaler and add interface for image processing / e.g. branding
+    // use scaler and add interface for image processing / e.g. branding
+    if (videoContext) {
+        if (! videoScaler) {
+            videoScaler = new FFmpegVideoScaler ();
+            videoScaler->setupScaler (image.getWidth(),
+                                      image.getHeight(),
+                                      AV_PIX_FMT_BGR0,
+                                      videoContext->width,
+                                      videoContext->height,
+                                      videoContext->pix_fmt);
+        }
+        AVFrame* frame = av_frame_alloc ();
+        frame->width = videoContext->width;
+        frame->height = videoContext->height;
+        frame->format = videoContext->pix_fmt;
+        int ret = av_image_alloc(frame->data, frame->linesize,
+                                 videoContext->width,
+                                 videoContext->height,
+                                 videoContext->pix_fmt, 32);
+        if (ret < 0) {
+            DBG ("Could not allocate raw picture buffer");
+            av_free (&frame);
+            return;
+        }
+        videoScaler->convertImageToFrame (frame, image);
+        frame->pts = timestamp;
+        writeNextVideoFrame (frame);
+    }
 }
 
 bool FFmpegVideoWriter::writeAudioFrame (const bool flush)

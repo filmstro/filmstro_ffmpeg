@@ -51,6 +51,8 @@ public:
 
     void convertFrameToImage (juce::Image& image, const AVFrame* frame);
 
+    void convertImageToFrame (AVFrame* frame, const juce::Image& image);
+
 private:
     SwsContext*         scalerContext;
 

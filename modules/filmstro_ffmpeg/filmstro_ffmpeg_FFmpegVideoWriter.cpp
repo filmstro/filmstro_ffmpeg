@@ -192,16 +192,19 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
                 videoContext->pix_fmt   = pixelFormat;
                 videoContext->sample_aspect_ratio = pixelAspect;
                 videoContext->codec_type = encoder->type;
+                videoContext->color_range = AVCOL_RANGE_JPEG;
                 videoContext->codec_id  = videoCodec;
                 videoContext->width     = videoWidth;
                 videoContext->height    = videoHeight;
                 videoContext->bit_rate  = 400000;
+                videoContext->gop_size  = 10;
+                videoContext->max_b_frames = 1;
                 avcodec_parameters_from_context (stream->codecpar, videoContext);
 
                 AVDictionary* options = nullptr;
 
                 if (encoder->id == AV_CODEC_ID_H264) {
-                    av_dict_set (&options, "preset", "medium", 0);
+                    av_dict_set (&options, "preset", "slow", 0);
                     av_dict_set (&options, "tune", "film", 0);
                 }
 
@@ -212,6 +215,9 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
                     videoCodec = AV_CODEC_ID_NONE;
                 }
                 av_dict_free (&options);
+            }
+            else {
+                DBG ("Video encoder not found for " + String (avcodec_get_name (videoCodec)));
             }
         }
     }
@@ -244,7 +250,9 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
                     audioStreamIdx = -1;
                     audioCodec = AV_CODEC_ID_NONE;
                 }
-
+            }
+            else {
+                DBG ("Audio encoder not found for " + String (avcodec_get_name (audioCodec)));
             }
         }
     }
@@ -388,6 +396,7 @@ void FFmpegVideoWriter::writeNextVideoFrame (const juce::Image& image, const juc
         frame->width = videoContext->width;
         frame->height = videoContext->height;
         frame->format = videoContext->pix_fmt;
+        av_frame_set_color_range (frame, videoContext->color_range);
         int ret = av_image_alloc(frame->data, frame->linesize,
                                  videoContext->width,
                                  videoContext->height,

@@ -101,7 +101,7 @@ void FFmpegVideoScaler::convertImageToFrame (AVFrame* frame, const juce::Image& 
                                 image.getWidth(),
                                 image.getHeight());
 
-        uint8_t* source[4] = {data.data, data.data, data.data, data.data};
+        uint8_t* source[4] = {data.data, nullptr, nullptr, nullptr};
         int bitsPerLine = 4 * image.getWidth();
         int linesizes[4] = {bitsPerLine, bitsPerLine, bitsPerLine, bitsPerLine};
 

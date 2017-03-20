@@ -146,9 +146,9 @@ void FFmpegVideoWriter::copySettingsFromContext (const AVCodecContext* context)
         }
         else if (context->codec_type == AVMEDIA_TYPE_AUDIO) {
             audioCodec  = context->codec_id;
-            sampleRate  = context->sample_rate;
             channelLayout = context->channel_layout;
             // we don't copy audio, it's coming from JUCE so it's gonna be AV_SAMPLE_FMT_FLTP
+            //sampleRate  = context->sample_rate;
         }
         else if (context->codec_type == AVMEDIA_TYPE_SUBTITLE) {
             // FIXME: TODO
@@ -239,7 +239,7 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
                 audioContext->channels = av_get_channel_layout_nb_channels (channelLayout);
                 audioContext->bit_rate = 64000;
                 audioContext->frame_size = 1024;
-                audioContext->bits_per_raw_sample = 4;
+                audioContext->bits_per_raw_sample = 32;
                 avcodec_parameters_from_context (stream->codecpar, audioContext);
 
                 int ret = avcodec_open2 (audioContext, encoder, NULL);
@@ -472,6 +472,8 @@ int FFmpegVideoWriter::encode_write_frame(AVFrame *frame, AVMediaType type, int 
         enc_pkt.size = 0;
         av_init_packet(&enc_pkt);
         if (type == AVMEDIA_TYPE_VIDEO) {
+            if (frame)
+                av_frame_set_color_range (frame, AVCOL_RANGE_JPEG);
             ret = avcodec_encode_video2 (videoContext, &enc_pkt, frame, got_frame);
             enc_pkt.stream_index = videoStreamIdx;
             av_packet_rescale_ts(&enc_pkt,

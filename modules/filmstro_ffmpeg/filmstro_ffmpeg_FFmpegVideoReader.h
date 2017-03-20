@@ -113,6 +113,8 @@ public:
          this will return the timebase of the video stream. */
         double  getFramesPerSecond () const;
 
+        /** This will return the time_base from the video stream */
+        AVRational getVideoTimeBase () const;
 
         /** Give access to the context to set up writers */
         AVFormatContext* getVideoReaderContext();
@@ -231,6 +233,9 @@ public:
     /** get the pixel format of the video images according to decoder,
         will be converted to BGR0 to be displayed as juce::Image */
     enum AVPixelFormat getPixelFormat () const;
+
+    /** This will return the time_base from the video stream */
+    AVRational getVideoTimeBase () const;
 
     static juce::String formatTimeCode (const double tc);
 

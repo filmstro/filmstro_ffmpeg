@@ -177,6 +177,11 @@ enum AVPixelFormat FFmpegVideoReader::getPixelFormat () const
     return decoder.getPixelFormat();
 }
 
+AVRational FFmpegVideoReader::getVideoTimeBase () const
+{
+    return decoder.getVideoTimeBase();
+}
+
 juce::String FFmpegVideoReader::formatTimeCode (const double tc)
 {
     MemoryBlock formatted;
@@ -681,6 +686,16 @@ double FFmpegVideoReader::DecoderThread::getPixelAspect () const
     if (videoContext && videoContext->sample_aspect_ratio.num > 0)
         return av_q2d (videoContext->sample_aspect_ratio);
     return 1.0;
+}
+
+AVRational FFmpegVideoReader::DecoderThread::getVideoTimeBase () const
+{
+    if (formatContext) {
+        if (isPositiveAndBelow (videoStreamIdx, static_cast<int> (formatContext->nb_streams))) {
+            return formatContext->streams [videoStreamIdx]->time_base;
+        }
+    }
+    return av_make_q (0, 1);
 }
 
 double FFmpegVideoReader::DecoderThread::getFramesPerSecond () const

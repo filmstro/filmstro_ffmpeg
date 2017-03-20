@@ -21,7 +21,7 @@ public:
     {
         counter = -1;
         setSize (800, 600);
-        setFramesPerSecond (60);
+        setFramesPerSecond (25);
     }
 
     ~MainContentComponent()
@@ -39,7 +39,7 @@ public:
                 videoWriter->setVideoCodec (AV_CODEC_ID_H264);
                 videoWriter->setPixelAspect (1, 1);
                 videoWriter->setPixelFormat (AV_PIX_FMT_YUV420P);
-                videoWriter->setTimeBase (AVMEDIA_TYPE_VIDEO, av_make_q (1, 24));
+                videoWriter->setTimeBase (AVMEDIA_TYPE_VIDEO, av_make_q (1, 25));
                 videoWriter->openMovieFile (chooser.getResult());
                 counter = 0;
             }
@@ -60,6 +60,7 @@ public:
             }
             Graphics g(videoCanvas);
             paint (g);
+//            videoCanvas = createComponentSnapshot (getLocalBounds());
             videoWriter->writeNextVideoFrame (videoCanvas, counter);
 
             ++counter;

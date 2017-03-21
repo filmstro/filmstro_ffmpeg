@@ -54,7 +54,10 @@ public:
     void convertImageToFrame (AVFrame* frame, const juce::Image& image);
 
 private:
-    SwsContext*         scalerContext;
+    SwsContext* scalerContext;
+
+    int         inLinesizes[4];
+    int         outLinesizes[4];
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FFmpegVideoScaler)
 };

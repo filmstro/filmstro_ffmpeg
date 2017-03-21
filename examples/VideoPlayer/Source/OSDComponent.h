@@ -56,12 +56,12 @@ public:
         openFile->addListener (this);
         addAndMakeVisible (openFile);
         flexBox.items.add (FlexItem (*openFile).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
-#if 0
+
         saveFile = new TextButton ("Save", "Save");
         saveFile->addListener (this);
         addAndMakeVisible (saveFile);
         flexBox.items.add (FlexItem (*saveFile).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
-#endif
+
         seekBar = new Slider (Slider::LinearHorizontal, Slider::NoTextBox);
         addAndMakeVisible (seekBar);
         seekBar->addListener (this);
@@ -173,29 +173,37 @@ public:
             if (chooser.browseForFileToSave (true)) {
                 File saveFileName = chooser.getResult();
 
+                FFmpegVideoReader copyReader;
+                copyReader.loadMovieFile (videoReader->getVideoFileName());
+                copyReader.prepareToPlay (1024, videoReader->getVideoSamplingRate());
+
                 FFmpegVideoWriter writer;
-                writer.copySettingsFromContext (videoReader->getVideoContext());
-                writer.copySettingsFromContext (videoReader->getAudioContext());
-                writer.copySettingsFromContext (videoReader->getSubtitleContext());
+                AVRational videoTimeBase = copyReader.getVideoTimeBase();
+                if (videoTimeBase.num > 0) {
+                    writer.setTimeBase (AVMEDIA_TYPE_VIDEO, videoTimeBase);
+                }
+                writer.copySettingsFromContext (copyReader.getVideoContext());
+                writer.copySettingsFromContext (copyReader.getAudioContext());
+                writer.copySettingsFromContext (copyReader.getSubtitleContext());
 
                 writer.openMovieFile (saveFileName);
 
-                videoReader->setNextReadPosition (0);
-                videoReader->addVideoListener (&writer);
+                copyReader.setNextReadPosition (0);
+                copyReader.addVideoListener (&writer);
 
                 AudioBuffer<float> buffer;
                 buffer.setSize (2, 1024);
 
-                while (videoReader->getCurrentTimeStamp() < videoReader->getVideoDuration()) {
+                while (copyReader.getCurrentTimeStamp() < copyReader.getVideoDuration()) {
                     AudioSourceChannelInfo info (&buffer, 0, 1024);
-                    videoReader->waitForNextAudioBlockReady (info, 500);
-                    videoReader->getNextAudioBlock (info);
+                    copyReader.waitForNextAudioBlockReady (info, 500);
+                    copyReader.getNextAudioBlock (info);
 
                     writer.writeNextAudioBlock (info);
                 }
                 writer.closeMovieFile ();
 
-                videoReader->removeVideoListener (&writer);
+                copyReader.removeVideoListener (&writer);
             }
         }
     }

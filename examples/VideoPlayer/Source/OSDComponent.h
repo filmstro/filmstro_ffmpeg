@@ -52,18 +52,16 @@ public:
 
         setInterceptsMouseClicks (false, true);
 
-        //flexBox.items.add (FlexItem().withFlex (8.0, 1.0).withAlignSelf (FlexItem::AlignSelf::flexEnd));
-
         openFile = new TextButton ("Open", "Open");
         openFile->addListener (this);
         addAndMakeVisible (openFile);
         flexBox.items.add (FlexItem (*openFile).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
-#if 0
+
         saveFile = new TextButton ("Save", "Save");
         saveFile->addListener (this);
         addAndMakeVisible (saveFile);
         flexBox.items.add (FlexItem (*saveFile).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
-#endif
+
         seekBar = new Slider (Slider::LinearHorizontal, Slider::NoTextBox);
         addAndMakeVisible (seekBar);
         seekBar->addListener (this);
@@ -89,6 +87,7 @@ public:
         addAndMakeVisible (ffwd);
         flexBox.items.add (FlexItem (*ffwd).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
 
+        idle = new MouseIdle (*this);
     }
 
     ~OSDComponent()
@@ -97,8 +96,14 @@ public:
 
     void paint (Graphics& g) override
     {
-        // is transparent
-        seekBar->setValue (videoReader->getCurrentTimeStamp(), dontSendNotification);
+        if (videoReader && videoReader->getVideoDuration() > 0) {
+            g.setColour (Colours::white);
+            g.setFont (24);
+            String dim = String (videoReader->getVideoWidth()) + " x " + String (videoReader->getVideoHeight());
+            g.drawFittedText (dim, getLocalBounds(), Justification::topLeft, 1);
+            g.drawFittedText (FFmpegVideoReader::formatTimeCode (videoReader->getCurrentTimeStamp ()),
+                              getLocalBounds(), Justification::topRight, 1);
+        }
     }
 
     void resized() override
@@ -168,38 +173,89 @@ public:
             if (chooser.browseForFileToSave (true)) {
                 File saveFileName = chooser.getResult();
 
+                FFmpegVideoReader copyReader;
+                copyReader.loadMovieFile (videoReader->getVideoFileName());
+                copyReader.prepareToPlay (1024, videoReader->getVideoSamplingRate());
+
                 FFmpegVideoWriter writer;
-                writer.copySettingsFromContext (videoReader->getVideoContext());
-                writer.copySettingsFromContext (videoReader->getAudioContext());
-                writer.copySettingsFromContext (videoReader->getSubtitleContext());
+                AVRational videoTimeBase = copyReader.getVideoTimeBase();
+                if (videoTimeBase.num > 0) {
+                    writer.setTimeBase (AVMEDIA_TYPE_VIDEO, videoTimeBase);
+                }
+                writer.copySettingsFromContext (copyReader.getVideoContext());
+                writer.copySettingsFromContext (copyReader.getAudioContext());
+                writer.copySettingsFromContext (copyReader.getSubtitleContext());
 
                 writer.openMovieFile (saveFileName);
 
-                videoReader->setNextReadPosition (0);
-                videoReader->addVideoListener (&writer);
+                copyReader.setNextReadPosition (0);
+                copyReader.addVideoListener (&writer);
 
                 AudioBuffer<float> buffer;
                 buffer.setSize (2, 1024);
 
-                while (videoReader->getCurrentTimeStamp() < videoReader->getVideoDuration()) {
+                while (copyReader.getCurrentTimeStamp() < copyReader.getVideoDuration()) {
                     AudioSourceChannelInfo info (&buffer, 0, 1024);
-                    videoReader->waitForNextAudioBlockReady (info, 500);
-                    videoReader->getNextAudioBlock (info);
+                    copyReader.waitForNextAudioBlockReady (info, 500);
+                    copyReader.getNextAudioBlock (info);
 
                     writer.writeNextAudioBlock (info);
                 }
                 writer.closeMovieFile ();
 
-                videoReader->removeVideoListener (&writer);
+                copyReader.removeVideoListener (&writer);
             }
         }
     }
+
+    class MouseIdle : public MouseListener, public Timer
+    {
+    public:
+        MouseIdle (Component& c) :
+        component (c),
+        lastMovement (Time::getMillisecondCounter())
+        {
+            Desktop::getInstance().addGlobalMouseListener (this);
+            startTimerHz (20);
+        }
+
+        void timerCallback () override
+        {
+            const int64 relTime = Time::getMillisecondCounter() - lastMovement;
+            if (relTime < 2000) {
+                component.setVisible (true);
+                component.setAlpha (1.0);
+                component.setMouseCursor (MouseCursor::StandardCursorType::NormalCursor);
+            }
+            else if (relTime < 2300) {
+                component.setAlpha (1.0 - jmax (0.0, (relTime - 2000.0) / 300.0));
+                component.setMouseCursor (MouseCursor::StandardCursorType::NoCursor);
+            }
+            else {
+                component.setVisible (false);
+                component.setMouseCursor (MouseCursor::StandardCursorType::NoCursor);
+            }
+        }
+
+        void mouseMove (const MouseEvent &event) override
+        {
+            if (event.position.getDistanceFrom (lastPosition) > 3.0) {
+                lastMovement = Time::getMillisecondCounter();
+                lastPosition = event.position;
+            }
+        }
+    private:
+        Component&   component;
+        int64        lastMovement;
+        Point<float> lastPosition;
+    };
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OSDComponent)
 
     FlexBox                             flexBox;
 
+    ScopedPointer<MouseIdle>            idle;
     ScopedPointer<Slider>               seekBar;
     ScopedPointer<TextButton>           openFile;
     ScopedPointer<TextButton>           saveFile;

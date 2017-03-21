@@ -81,12 +81,22 @@ bool FFmpegVideoReader::loadMovieFile (const File& inputFile)
         return false;
     }
 
-    return decoder.loadMovieFile (inputFile);
+    if (decoder.loadMovieFile (inputFile)) {
+        videoFileName = inputFile;
+        return true;
+    }
+    return false;
 }
 
 void FFmpegVideoReader::closeMovieFile ()
 {
     decoder.closeMovieFile();
+    videoFileName = File();
+}
+
+juce::File FFmpegVideoReader::getVideoFileName () const
+{
+    return videoFileName;
 }
 
 double FFmpegVideoReader::getFramesPerSecond () const
@@ -167,6 +177,29 @@ enum AVPixelFormat FFmpegVideoReader::getPixelFormat () const
     return decoder.getPixelFormat();
 }
 
+AVRational FFmpegVideoReader::getVideoTimeBase () const
+{
+    return decoder.getVideoTimeBase();
+}
+
+juce::String FFmpegVideoReader::formatTimeCode (const double tc)
+{
+    MemoryBlock formatted;
+    {
+        MemoryOutputStream str (formatted, false);
+        int tc_int = static_cast<int> (fabs(tc));
+        if (tc < 0.0)
+            str << "-";
+        if (tc >= 3600)
+            str << String (static_cast<int> (tc_int / 3600)) << ":";
+        str << String (static_cast<int> ((tc_int % 3600) / 60)).paddedLeft ('0', 2) << ":";
+        str << String (static_cast<int> (tc_int % 60)).paddedLeft ('0', 2) << ".";
+        str << String (static_cast<int> ((static_cast<int> (fabs(tc * 100))) % 100)).paddedLeft ('0', 2);
+    }
+    return formatted.toString();
+}
+
+
 // ==============================================================================
 // from AudioSource
 // ==============================================================================
@@ -193,6 +226,9 @@ void FFmpegVideoReader::getNextAudioBlock (const juce::AudioSourceChannelInfo &b
 
     // this triggers also reading of new video frame
     decoder.setCurrentPTS (static_cast<double>(nextReadPos) / sampleRate);
+#ifdef DEBUG_LOG_PACKETS
+    DBG ("Play audio block: " + String (nextReadPos) + " PTS: " + String (static_cast<double>(nextReadPos) / sampleRate));
+#endif // DEBUG_LOG_PACKETS
 
     if (audioFifo.getNumReady() >= bufferToFill.numSamples) {
         audioFifo.readFromFifo (bufferToFill);
@@ -333,6 +369,7 @@ bool FFmpegVideoReader::DecoderThread::loadMovieFile (const juce::File& inputFil
     audioStreamIdx = openCodecContext (&audioContext, AVMEDIA_TYPE_AUDIO, true);
     if (isPositiveAndBelow (audioStreamIdx, static_cast<int> (formatContext->nb_streams))) {
         audioContext->request_sample_fmt = AV_SAMPLE_FMT_FLTP;
+        //audioContext->request_channel_layout = AV_CH_LAYOUT_STEREO_DOWNMIX;
     }
 
     videoStreamIdx = openCodecContext (&videoContext, AVMEDIA_TYPE_VIDEO, true);
@@ -341,6 +378,8 @@ bool FFmpegVideoReader::DecoderThread::loadMovieFile (const juce::File& inputFil
                                                                      videoContext->height,
                                                                      videoContext->pix_fmt);
     }
+
+    av_dump_format (formatContext, 0, inputFile.getFullPathName().toRawUTF8(), 0);
 
     videoListeners.call (&FFmpegVideoListener::videoFileChanged, inputFile);
 
@@ -461,19 +500,19 @@ int FFmpegVideoReader::DecoderThread::decodeAudioPacket (AVPacket packet)
         packet.size -= decoded;
 
         if (got_frame && decoded > 0 && audioFrame->extended_data != nullptr) {
-            int planar     = av_sample_fmt_is_planar (static_cast<AVSampleFormat> (audioFrame->format));
-            int bps        = av_get_bytes_per_sample (static_cast<AVSampleFormat> (audioFrame->format));
-            int channels   = av_get_channel_layout_nb_channels (audioFrame->channel_layout);
-            int numSamples = planar ? audioFrame->linesize[0] / (bps * channels) : audioFrame->nb_samples;
+            const int channels   = av_get_channel_layout_nb_channels (audioFrame->channel_layout);
+            const int numSamples = audioFrame->nb_samples;
 
             int offset = (currentPTS - framePTSsecs) * audioContext->sample_rate;
             if (offset > 100) {
                 if (offset < numSamples) {
-                    AudioBuffer<float> subset ((float* const*)audioFrame->extended_data, channels, offset, numSamples-offset);
+                    outputNumSamples = numSamples-offset;
+                    AudioBuffer<float> subset ((float* const*)audioFrame->extended_data, channels, offset, outputNumSamples);
                     audioFifo.addToFifo (subset);
                 }
             }
             else {
+                outputNumSamples = numSamples;
                 audioFifo.addToFifo ((const float **)audioFrame->extended_data, numSamples);
             }
         }
@@ -647,6 +686,16 @@ double FFmpegVideoReader::DecoderThread::getPixelAspect () const
     if (videoContext && videoContext->sample_aspect_ratio.num > 0)
         return av_q2d (videoContext->sample_aspect_ratio);
     return 1.0;
+}
+
+AVRational FFmpegVideoReader::DecoderThread::getVideoTimeBase () const
+{
+    if (formatContext) {
+        if (isPositiveAndBelow (videoStreamIdx, static_cast<int> (formatContext->nb_streams))) {
+            return formatContext->streams [videoStreamIdx]->time_base;
+        }
+    }
+    return av_make_q (0, 1);
 }
 
 double FFmpegVideoReader::DecoderThread::getFramesPerSecond () const

@@ -95,8 +95,6 @@ public:
         osdComponent = new OSDComponent (videoReader, transportSource);
         addAndMakeVisible (osdComponent);
 
-        setSize (800, 600);
-
         // specify the number of input and output channels that we want to open
         setAudioChannels (0, 6);
 
@@ -107,6 +105,16 @@ public:
             DBG ("Current Bitdepth:   " + String (device->getCurrentBitDepth()));
         }
 #endif /* DEBUG */
+
+#ifdef USE_FF_AUDIO_METERS
+        meter = new LevelMeter ();
+        meter->getLookAndFeel()->setMeterColour (LevelMeterLookAndFeel::lmBackgroundColour,
+                                                 Colour::fromFloatRGBA (0.0f, 0.0f, 0.0f, 0.6f));
+        meter->setMeterSource (&meterSource);
+        addAndMakeVisible (meter);
+#endif
+
+        setSize (800, 600);
     }
 
     ~MainContentComponent()
@@ -119,14 +127,36 @@ public:
     {
         // This function will be called when the audio device is started, or when
         // its settings (i.e. sample rate, block size, etc) are changed.
-        videoReader->prepareToPlay (samplesPerBlockExpected, sampleRate);
-        transportSource->prepareToPlay (samplesPerBlockExpected, sampleRate);
+        if (videoReader)     videoReader->prepareToPlay (samplesPerBlockExpected, sampleRate);
+        if (transportSource) transportSource->prepareToPlay (samplesPerBlockExpected, sampleRate);
+
+        readBuffer.setSize (6, samplesPerBlockExpected);
     }
 
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override
     {
+        AudioSourceChannelInfo info (&readBuffer,
+                                     bufferToFill.startSample,
+                                     bufferToFill.numSamples);
         // the AudioTransportSource takes care of start, stop and resample
-        transportSource->getNextAudioBlock (bufferToFill);
+        transportSource->getNextAudioBlock (info);
+
+#ifdef USE_FF_AUDIO_METERS
+        meterSource.measureBlock (readBuffer);
+#endif
+
+        for (int i=0; i < bufferToFill.buffer->getNumChannels(); ++i) {
+            bufferToFill.buffer->copyFrom (i, bufferToFill.startSample,
+                                           readBuffer.getReadPointer (i),
+                                           bufferToFill.numSamples);
+            if (bufferToFill.buffer->getNumChannels() == 2 &&
+                readBuffer.getNumChannels() > 2) {
+                // add center to left and right
+                bufferToFill.buffer->addFrom (i, bufferToFill.startSample,
+                                              readBuffer.getReadPointer (2),
+                                              bufferToFill.numSamples, 0.7);
+            }
+        }
     }
 
     void releaseResources() override
@@ -165,15 +195,17 @@ public:
         if (AudioIODevice* device = deviceManager.getCurrentAudioDevice()) {
             videoReader->prepareToPlay (device->getCurrentBufferSizeSamples(),
                                         device->getCurrentSampleRate());
+            readBuffer.setSize (videoReader->getVideoChannels(),
+                                device->getCurrentBufferSizeSamples());
 
         }
     }
 
     void presentationTimestampChanged (const double pts) override
     {
-        // a Slider::setValue can only occur on message thread, because it triggers a
-        // repaint, which fails an assert being the message thread
-        //osdComponent->setCurrentTime (videoReader->getCurrentTimeStamp());
+        MessageManager::callAsync (std::bind (&OSDComponent::setCurrentTime,
+                                              osdComponent.get(),
+                                              videoReader->getCurrentTimeStamp()));
     }
 
     void paint (Graphics& g) override
@@ -185,6 +217,11 @@ public:
     {
         videoComponent->setBounds (getBounds());
         osdComponent->setBounds (getBounds());
+
+#ifdef USE_FF_AUDIO_METERS
+        const int w = 30 + 20 * videoReader->getVideoChannels();
+        meter->setBounds (getWidth() - w, getHeight() - 240, w, 200);
+#endif
     }
 
 
@@ -196,6 +233,13 @@ private:
     ScopedPointer<FFmpegVideoReader>    videoReader;
     ScopedPointer<OSDComponent>         osdComponent;
     ScopedPointer<AudioTransportSource> transportSource;
+
+#ifdef USE_FF_AUDIO_METERS
+    ScopedPointer<LevelMeter>           meter;
+    LevelMeterSource                    meterSource;
+#endif
+
+    AudioSampleBuffer                   readBuffer;
 
     double                              videoAspectRatio;
 

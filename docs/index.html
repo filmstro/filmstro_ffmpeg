@@ -82,14 +82,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>This is a module to read video files and play/display it using the JUCE framework (juce.com). The audio will be available as a juce::AudioSource and can be processed through a regular processing chain.</p>
 <p>Find the <a href="https://filmstro.github.io/filmstro_ffmpeg/docs/">API documentation here</a></p>
 <h1>Dependencies </h1>
-<p>The reading is done using ffMpeg (ffmpeg.org). you will have to build ffmpeg and link your project to it. We use this flags:</p>
+<p>The reading is done using ffMpeg (ffmpeg.org). You will have to build ffmpeg and link your project to it, if it's not already installed. We use this flags:</p>
 <p>OSX: </p><pre class="fragment">./configure --cc=CC --arch=x86_64 --disable-static --enable-shared --disable-stripping --disable-debug --install-name-dir='@loader_path'
 </pre><p>Windows: </p><pre class="fragment">./configure --toolchain=msvc --disable-static --enable-shared --prefix=../build/windows --arch=x86 
 </pre><p>To make </p><pre class="fragment">make -j10
 make install
-</pre><h1>Current State </h1>
-<p>It works for us with mp4 files. However, there are many formats, and many create problems, mostly to do with the sequence of packets / frames in the stream. To improve this any insights and findings are very welcome.</p>
-<p>The VideoWriter is leftover from a previous test and will be completely rewritten.</p>
+</pre><p>You can add an audio meter simply by adding the module <a href="https://github.com/ffAudio/ff_meters">https://github.com/ffAudio/ff_meters</a> to the projucer project.</p>
+<h1>Current State </h1>
+<p>It works for us with mp4 files. However, there are many formats that theoretically should work, but some create problems, probably to do with the sequence of packets / frames in the stream. To improve this any insights and findings are very welcome.</p>
+<p>There is an example how to write e.g. an Animation to a file, see examples/AnimationWriter. The animation is simply copied from the JUCE examples and the writer is added.</p>
 <hr/>
 <p>We hope it is of any use, let us know of any problems or improvements you may come up with...</p>
 <p>Brighton, 9th February 2017</p>

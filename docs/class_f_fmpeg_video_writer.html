@@ -128,6 +128,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:adc4df0347505ebfb73dd067997ccaf3d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_writer.html#adc4df0347505ebfb73dd067997ccaf3d">setPixelAspect</a> (const int num, const int den)</td></tr>
 <tr class="memdesc:adc4df0347505ebfb73dd067997ccaf3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the pixel aspect ratio as fraction before opening a file.  <a href="#adc4df0347505ebfb73dd067997ccaf3d">More...</a><br /></td></tr>
 <tr class="separator:adc4df0347505ebfb73dd067997ccaf3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11caa06b633a955249e32c9dcb68259e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_writer.html#a11caa06b633a955249e32c9dcb68259e">setTimeBase</a> (AVMediaType type, AVRational timebase)</td></tr>
+<tr class="memdesc:a11caa06b633a955249e32c9dcb68259e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the timebase for the stream, provide either AVMEDIA_TYPE_VIDEO, AVMEDIA_TYPE_AUDIO, AVMEDIA_TYPE_SUBTITLE.  <a href="#a11caa06b633a955249e32c9dcb68259e">More...</a><br /></td></tr>
+<tr class="separator:a11caa06b633a955249e32c9dcb68259e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeec53fd3de00f384d53a34857fa8ba2c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_writer.html#aeec53fd3de00f384d53a34857fa8ba2c">copySettingsFromContext</a> (const AVCodecContext *context)</td></tr>
 <tr class="memdesc:aeec53fd3de00f384d53a34857fa8ba2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">copies settings from a context (e.g.  <a href="#aeec53fd3de00f384d53a34857fa8ba2c">More...</a><br /></td></tr>
 <tr class="separator:aeec53fd3de00f384d53a34857fa8ba2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -140,12 +143,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad0cfe7fdc02318ab53a9544f09cf344f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_writer.html#ad0cfe7fdc02318ab53a9544f09cf344f">writeNextAudioBlock</a> (juce::AudioSourceChannelInfo &amp;info)</td></tr>
 <tr class="memdesc:ad0cfe7fdc02318ab53a9544f09cf344f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a chunk of audio data.  <a href="#ad0cfe7fdc02318ab53a9544f09cf344f">More...</a><br /></td></tr>
 <tr class="separator:ad0cfe7fdc02318ab53a9544f09cf344f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2af32b50e05058ef8e1d16055c831fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_writer.html#af2af32b50e05058ef8e1d16055c831fa">writeNextVideoFrame</a> (const AVFrame *frame)</td></tr>
-<tr class="memdesc:af2af32b50e05058ef8e1d16055c831fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the next video frame.  <a href="#af2af32b50e05058ef8e1d16055c831fa">More...</a><br /></td></tr>
-<tr class="separator:af2af32b50e05058ef8e1d16055c831fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d16d2845e2bb8ef9efeca85fa875962"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_writer.html#a9d16d2845e2bb8ef9efeca85fa875962">writeNextVideoFrame</a> (const juce::Image &amp;image, const AVRational timestamp)</td></tr>
-<tr class="memdesc:a9d16d2845e2bb8ef9efeca85fa875962"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the next video frame.  <a href="#a9d16d2845e2bb8ef9efeca85fa875962">More...</a><br /></td></tr>
-<tr class="separator:a9d16d2845e2bb8ef9efeca85fa875962"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08c5567d8769b4a27ff5a86ddd0de0c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_writer.html#a08c5567d8769b4a27ff5a86ddd0de0c8">writeNextVideoFrame</a> (const juce::Image &amp;image, const juce::int64 timestamp)</td></tr>
+<tr class="memdesc:a08c5567d8769b4a27ff5a86ddd0de0c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the next video frame from juce image.  <a href="#a08c5567d8769b4a27ff5a86ddd0de0c8">More...</a><br /></td></tr>
+<tr class="separator:a08c5567d8769b4a27ff5a86ddd0de0c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e3dcaf482be1b2369b1a28ff7673b66"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_writer.html#a7e3dcaf482be1b2369b1a28ff7673b66">displayNewFrame</a> (const AVFrame *) override</td></tr>
 <tr class="memdesc:a7e3dcaf482be1b2369b1a28ff7673b66"><td class="mdescLeft">&#160;</td><td class="mdescRight">This callback receives frames from e.g.  <a href="#a7e3dcaf482be1b2369b1a28ff7673b66">More...</a><br /></td></tr>
 <tr class="separator:a7e3dcaf482be1b2369b1a28ff7673b66"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -384,6 +384,34 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a11caa06b633a955249e32c9dcb68259e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void FFmpegVideoWriter::setTimeBase </td>
+          <td>(</td>
+          <td class="paramtype">AVMediaType&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">AVRational&#160;</td>
+          <td class="paramname"><em>timebase</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the timebase for the stream, provide either AVMEDIA_TYPE_VIDEO, AVMEDIA_TYPE_AUDIO, AVMEDIA_TYPE_SUBTITLE. </p>
+
+</div>
+</div>
 <a class="anchor" id="a11bd95a0e55b2943b680bd6e13279d75"></a>
 <div class="memitem">
 <div class="memproto">
@@ -449,26 +477,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="af2af32b50e05058ef8e1d16055c831fa"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void FFmpegVideoWriter::writeNextVideoFrame </td>
-          <td>(</td>
-          <td class="paramtype">const AVFrame *&#160;</td>
-          <td class="paramname"><em>frame</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Write the next video frame. </p>
-<p>The timestamp has to be set in the frame. </p>
-
-</div>
-</div>
-<a class="anchor" id="a9d16d2845e2bb8ef9efeca85fa875962"></a>
+<a class="anchor" id="a08c5567d8769b4a27ff5a86ddd0de0c8"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -481,7 +490,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const AVRational&#160;</td>
+          <td class="paramtype">const juce::int64&#160;</td>
           <td class="paramname"><em>timestamp</em>&#160;</td>
         </tr>
         <tr>
@@ -492,7 +501,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Write the next video frame. </p>
+<p>Write the next video frame from juce image. </p>
 
 </div>
 </div>

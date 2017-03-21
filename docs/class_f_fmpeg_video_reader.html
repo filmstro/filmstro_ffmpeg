@@ -85,6 +85,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="class_f_fmpeg_video_reader-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -122,6 +123,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae7b06f89c6a3864f5eacccc6eb126c9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02d42dba5a2efe22ec05f2574b93f28f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_reader.html#a02d42dba5a2efe22ec05f2574b93f28f">closeMovieFile</a> ()</td></tr>
 <tr class="separator:a02d42dba5a2efe22ec05f2574b93f28f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8ddd10df69d331b602c2fee6610f191"><td class="memItemLeft" align="right" valign="top">juce::File&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_reader.html#ab8ddd10df69d331b602c2fee6610f191">getVideoFileName</a> () const </td></tr>
+<tr class="memdesc:ab8ddd10df69d331b602c2fee6610f191"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the currently opened video file.  <a href="#ab8ddd10df69d331b602c2fee6610f191">More...</a><br /></td></tr>
+<tr class="separator:ab8ddd10df69d331b602c2fee6610f191"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1afcceaa20ab86dc5c8f70803fb671ad"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_reader.html#a1afcceaa20ab86dc5c8f70803fb671ad">getFramesPerSecond</a> () const </td></tr>
 <tr class="memdesc:a1afcceaa20ab86dc5c8f70803fb671ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the framerate.  <a href="#a1afcceaa20ab86dc5c8f70803fb671ad">More...</a><br /></td></tr>
 <tr class="separator:a1afcceaa20ab86dc5c8f70803fb671ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -163,6 +167,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3eabed9bd1da376bda08d0a3d9cf223b"><td class="memItemLeft" align="right" valign="top">enum AVPixelFormat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_reader.html#a3eabed9bd1da376bda08d0a3d9cf223b">getPixelFormat</a> () const </td></tr>
 <tr class="memdesc:a3eabed9bd1da376bda08d0a3d9cf223b"><td class="mdescLeft">&#160;</td><td class="mdescRight">get the pixel format of the video images according to decoder, will be converted to BGR0 to be displayed as juce::Image  <a href="#a3eabed9bd1da376bda08d0a3d9cf223b">More...</a><br /></td></tr>
 <tr class="separator:a3eabed9bd1da376bda08d0a3d9cf223b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae23c989b5efa8afc3fe78fc1c7e394e4"><td class="memItemLeft" align="right" valign="top">AVRational&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_reader.html#ae23c989b5efa8afc3fe78fc1c7e394e4">getVideoTimeBase</a> () const </td></tr>
+<tr class="memdesc:ae23c989b5efa8afc3fe78fc1c7e394e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">This will return the time_base from the video stream.  <a href="#ae23c989b5efa8afc3fe78fc1c7e394e4">More...</a><br /></td></tr>
+<tr class="separator:ae23c989b5efa8afc3fe78fc1c7e394e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5832c3ec86f508d7745d8e457d87ec78"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_reader.html#a5832c3ec86f508d7745d8e457d87ec78">prepareToPlay</a> (int samplesPerBlockExpected, double sampleRate) override</td></tr>
 <tr class="separator:a5832c3ec86f508d7745d8e457d87ec78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4d5e571ea8d2b894f3af71f63828570"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_reader.html#af4d5e571ea8d2b894f3af71f63828570">releaseResources</a> () override</td></tr>
@@ -194,6 +201,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aed81314fdf4d2e85e0dfa365ad12b90d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52b66fc42aafe6abdad8b294950741ab"><td class="memItemLeft" align="right" valign="top">AVCodecContext *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_reader.html#a52b66fc42aafe6abdad8b294950741ab">getSubtitleContext</a> () const </td></tr>
 <tr class="separator:a52b66fc42aafe6abdad8b294950741ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a19be5f07922ecc9db5ac20288dcc1bda"><td class="memItemLeft" align="right" valign="top">static juce::String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_f_fmpeg_video_reader.html#a19be5f07922ecc9db5ac20288dcc1bda">formatTimeCode</a> (const double tc)</td></tr>
+<tr class="separator:a19be5f07922ecc9db5ac20288dcc1bda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -287,6 +299,30 @@ Friends</h2></td></tr>
           <td></td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a19be5f07922ecc9db5ac20288dcc1bda"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">juce::String FFmpegVideoReader::formatTimeCode </td>
+          <td>(</td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>tc</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -551,6 +587,23 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ab8ddd10df69d331b602c2fee6610f191"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">juce::File FFmpegVideoReader::getVideoFileName </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the currently opened video file. </p>
+
+</div>
+</div>
 <a class="anchor" id="a343ec4a24686a80007290e291709b2ab"></a>
 <div class="memitem">
 <div class="memproto">
@@ -600,6 +653,23 @@ Friends</h2></td></tr>
 
 <p>returns the sampling rate as specified in the video file. </p>
 <p>This can be different from the samplingrate the prepareToPlay was called with. The <a class="el" href="class_f_fmpeg_video_reader.html" title="Reads a ffmpeg video file ">FFmpegVideoReader</a> will not resample. </p>
+
+</div>
+</div>
+<a class="anchor" id="ae23c989b5efa8afc3fe78fc1c7e394e4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">AVRational FFmpegVideoReader::getVideoTimeBase </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This will return the time_base from the video stream. </p>
 
 </div>
 </div>

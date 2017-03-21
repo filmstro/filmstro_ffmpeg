@@ -42,7 +42,7 @@
 
 
 FFmpegVideoWriter::FFmpegVideoWriter()
- :  writePosition   (0),
+ :  audioWritePosition (0),
     formatContext   (nullptr),
     videoContext    (nullptr),
     audioContext    (nullptr),
@@ -166,7 +166,7 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
     audioStreamIdx  = -1;
     subtitleStreamIdx = -1;
 
-    writePosition   = 0;
+    audioWritePosition   = 0;
 
     /* allocate the output media context */
     avformat_alloc_output_context2 (&formatContext, NULL, NULL, outputFile.getFullPathName().toRawUTF8());
@@ -233,7 +233,7 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
             if (encoder) {
                 audioContext = avcodec_alloc_context3 (encoder);
                 audioContext->time_base = audioTimeBase;
-                audioContext->sample_rate = sampleRate;
+                audioContext->sample_rate = audioTimeBase.den;
                 audioContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
                 audioContext->channel_layout = channelLayout;
                 audioContext->channels = av_get_channel_layout_nb_channels (channelLayout);
@@ -312,8 +312,6 @@ void FFmpegVideoWriter::finishWriting ()
     if (formatContext) {
         AVMediaType mediaType;
         for (int idx=0; idx < formatContext->nb_streams; ++idx) {
-            int ret=1;
-            int got_frame;
             if (idx == videoStreamIdx) {
                 if (!(videoContext->codec->capabilities &
                       AV_CODEC_CAP_DELAY))
@@ -330,14 +328,8 @@ void FFmpegVideoWriter::finishWriting ()
                 break;
             }
 
-            while (ret > 0) {
-                av_log(NULL, AV_LOG_INFO, "Flushing stream #%u encoder\n", idx);
-                ret = encode_write_frame (NULL, mediaType, &got_frame);
-                if (ret < 0)
-                    break;
-                if (!got_frame)
-                    ret = 0;
-            }
+            av_log(NULL, AV_LOG_INFO, "Flushing stream #%u encoder\n", idx);
+            while (encodeWriteFrame (NULL, mediaType));
         }
 
         av_write_trailer (formatContext);
@@ -359,24 +351,13 @@ void FFmpegVideoWriter::closeContexts ()
     avcodec_free_context (&subtitleContext);
     formatContext   = nullptr;
     videoScaler     = nullptr;
-    writePosition   = 0;
+    audioWritePosition   = 0;
 }
 
 void FFmpegVideoWriter::writeNextAudioBlock (juce::AudioSourceChannelInfo& info)
 {
     audioFifo.addToFifo (*info.buffer, info.numSamples);
     writeAudioFrame (false);
-}
-
-void FFmpegVideoWriter::writeNextVideoFrame (AVFrame* frame)
-{
-    if (formatContext &&
-        isPositiveAndBelow (videoStreamIdx, static_cast<int> (formatContext->nb_streams))) {
-
-        DBG ("Start writing video frame, pts: " + juce::String (frame->pts));
-        int got_output = 0;
-        encode_write_frame (frame, AVMEDIA_TYPE_VIDEO, &got_output);
-   }
 }
 
 void FFmpegVideoWriter::writeNextVideoFrame (const juce::Image& image, const juce::int64 timestamp)
@@ -408,7 +389,7 @@ void FFmpegVideoWriter::writeNextVideoFrame (const juce::Image& image, const juc
         }
         videoScaler->convertImageToFrame (frame, image);
         frame->pts = timestamp;
-        writeNextVideoFrame (frame);
+        encodeWriteFrame (frame, AVMEDIA_TYPE_VIDEO);
     }
 }
 
@@ -428,8 +409,8 @@ bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
             frame->format       = AV_SAMPLE_FMT_FLTP;
             frame->channel_layout = channelLayout;
             frame->channels     = numChannels;
-            frame->pts          = writePosition;
-            DBG ("Start writing audio frame, pts: " + String (writePosition));
+            frame->pts          = audioWritePosition;
+            DBG ("Start writing audio frame, pts: " + String (audioWritePosition));
             int bufferSize = av_samples_get_buffer_size (nullptr, frame->channels, frame->nb_samples, AV_SAMPLE_FMT_FLTP, 0);
             float* samples = static_cast<float*> (av_malloc (bufferSize));
             avcodec_fill_audio_frame (frame,
@@ -445,13 +426,12 @@ bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
             }
             audioFifo.readFromFifo (sampleData, numFrameSamples);
 
-            int got_output = 0;
-            encode_write_frame (frame, AVMEDIA_TYPE_AUDIO, &got_output);
+            encodeWriteFrame (frame, AVMEDIA_TYPE_AUDIO);
 
             delete[] sampleData;
             //av_freep (buffer);
 
-            writePosition += numFrameSamples;
+            audioWritePosition += numFrameSamples;
         }
         
         return true;
@@ -459,35 +439,43 @@ bool FFmpegVideoWriter::writeAudioFrame (const bool flush)
     return false;
 }
 
-int FFmpegVideoWriter::encode_write_frame(AVFrame *frame, AVMediaType type, int *got_frame) {
+int FFmpegVideoWriter::encodeWriteFrame (AVFrame *frame, AVMediaType type) {
+    int got_frame = 0;
     if (formatContext) {
         int ret;
-        int got_frame_local;
-        AVPacket enc_pkt;
-        if (!got_frame)
-            got_frame = &got_frame_local;
-        av_log(NULL, AV_LOG_INFO, "Encoding frame\n");
-        /* encode filtered frame */
-        enc_pkt.data = NULL;
-        enc_pkt.size = 0;
-        av_init_packet(&enc_pkt);
+        AVPacket packet;
+        packet.data = NULL;
+        packet.size = 0;
+        av_init_packet (&packet);
         if (type == AVMEDIA_TYPE_VIDEO) {
             if (frame)
                 av_frame_set_color_range (frame, AVCOL_RANGE_JPEG);
-            ret = avcodec_encode_video2 (videoContext, &enc_pkt, frame, got_frame);
-            enc_pkt.stream_index = videoStreamIdx;
-            av_packet_rescale_ts(&enc_pkt,
-                                 videoContext->time_base,
-                                 formatContext->streams [videoStreamIdx]->time_base);
+            ret = avcodec_encode_video2 (videoContext, &packet, frame, &got_frame);
+            packet.stream_index = videoStreamIdx;
+            av_packet_rescale_ts (&packet,
+                                  videoContext->time_base,
+                                  formatContext->streams [videoStreamIdx]->time_base);
             av_frame_free (&frame);
+            if (ret < 0) {
+                char error[255];
+                av_strerror (ret, error, 255);
+                DBG (String ("Error when encoding video data: ") += error);
+                return false;
+            }
         }
         else if (type == AVMEDIA_TYPE_AUDIO) {
-            ret = avcodec_encode_audio2 (audioContext, &enc_pkt, frame, got_frame);
+            ret = avcodec_encode_audio2 (audioContext, &packet, frame, &got_frame);
+            packet.stream_index = audioStreamIdx;
+            av_packet_rescale_ts (&packet,
+                                  audioContext->time_base,
+                                  formatContext->streams [audioStreamIdx]->time_base);
             av_frame_free (&frame);
-            enc_pkt.stream_index = audioStreamIdx;
-            av_packet_rescale_ts(&enc_pkt,
-                                 audioContext->time_base,
-                                 formatContext->streams [audioStreamIdx]->time_base);
+            if (ret < 0) {
+                char error[255];
+                av_strerror (ret, error, 255);
+                DBG (String ("Error when encoding audio data: ") += error);
+                return false;
+            }
         }
         else {
             // the AVFrame only holds audio or video data, so you shouldn't call that
@@ -495,18 +483,18 @@ int FFmpegVideoWriter::encode_write_frame(AVFrame *frame, AVMediaType type, int 
             jassertfalse;
         }
 
-        if (ret < 0)
-            return ret;
-        if (!(*got_frame))
-            return 0;
-
-        av_log(NULL, AV_LOG_DEBUG, "Muxing frame\n");
-        DBG ("Muxing frame");
-        /* mux encoded frame */
-        ret = av_interleaved_write_frame (formatContext, &enc_pkt);
-        return ret;
+        if (got_frame == 1) {
+            if (av_interleaved_write_frame (formatContext, &packet) < 0) {
+                DBG ("Error when writing data");
+                return false;
+            }
+        }
     }
-    return 0;
+    else {
+        DBG ("No writer open, did not write frame");
+        av_frame_free (&frame);
+    }
+    return got_frame == 1;
 }
 
 void FFmpegVideoWriter::displayNewFrame (const AVFrame* frame)
@@ -522,7 +510,7 @@ void FFmpegVideoWriter::displayNewFrame (const AVFrame* frame)
     frameCopy->sample_aspect_ratio = frame->sample_aspect_ratio;
     frameCopy->color_range = frame->color_range;
     frameCopy->pts = frame->pts;
-    writeNextVideoFrame (frameCopy);
+    encodeWriteFrame (frameCopy, AVMEDIA_TYPE_VIDEO);
 }
 
 

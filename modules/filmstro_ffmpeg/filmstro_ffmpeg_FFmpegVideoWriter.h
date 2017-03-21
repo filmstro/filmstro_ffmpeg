@@ -70,7 +70,8 @@ public:
     /** Set the pixel aspect ratio as fraction before opening a file */
     void setPixelAspect (const int num, const int den);
 
-    /** Set the timebase for the stream, provide either AVMEDIA_TYPE_VIDEO, AVMEDIA_TYPE_AUDIO, AVMEDIA_TYPE_SUBTITLE */
+    /** Set the timebase for the stream, provide either 
+     AVMEDIA_TYPE_VIDEO, AVMEDIA_TYPE_AUDIO, AVMEDIA_TYPE_SUBTITLE */
     void setTimeBase (AVMediaType type, AVRational timebase);
 
     /** copies settings from a context (e.g. FFmpegVideoReader) to the writer */
@@ -86,10 +87,7 @@ public:
     /** Append a chunk of audio data. It will call writeAudioFrame to get rid of the data */
     void writeNextAudioBlock (juce::AudioSourceChannelInfo& info);
 
-    /** Write the next video frame. The timestamp has to be set in the frame. */
-    void writeNextVideoFrame (AVFrame* frame);
-
-    /** Write the next video frame. */
+    /** Write the next video frame from juce image */
     void writeNextVideoFrame (const juce::Image& image, const juce::int64 timestamp);
 
     /** This callback receives frames from e.g. the FFmpegVideoReader to be written to the video file. 
@@ -107,11 +105,12 @@ private:
     /** Write audio data to frame, if there is enough. If flush is set to true, it will append silence to fill the last frame. */
     bool writeAudioFrame (const bool flush=false);
 
-    int encode_write_frame (AVFrame *frame, AVMediaType type, int *got_frame);
+    int encodeWriteFrame (AVFrame *frame, AVMediaType type);
 
     // ==============================================================================
 
-    juce::int64             writePosition;
+    /** This is the samplecode of the next sample to be written */
+    juce::int64             audioWritePosition;
 
     AVFormatContext*        formatContext;
 

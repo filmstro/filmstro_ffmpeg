@@ -14,8 +14,8 @@ Find the [API documentation here](https://filmstro.github.io/filmstro_ffmpeg/doc
 Dependencies
 ============
 
-The reading is done using ffMpeg (ffmpeg.org). you will have to build ffmpeg
-and link your project to it. We use this flags:
+The reading is done using ffMpeg (ffmpeg.org). You will have to build ffmpeg
+and link your project to it, if it's not already installed. We use this flags:
 
 OSX:
 
@@ -40,7 +40,8 @@ It works for us with mp4 files. However, there are many formats that theoretical
 problems, probably to do with the sequence of packets / frames in the stream. To
 improve this any insights and findings are very welcome.
 
-The VideoWriter is leftover from a previous test and will be completely rewritten.
+There is an example how to write e.g. an Animation to a file, see examples/AnimationWriter. The animation is
+simply copied from the JUCE examples and the writer is added.
 
 ********************************************************************************
 

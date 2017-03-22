@@ -48,7 +48,7 @@ class FFmpegVideoWriter : public FFmpegVideoListener
 {
 public:
 
-    FFmpegVideoWriter();
+    FFmpegVideoWriter (const juce::String& format = juce::String());
     ~FFmpegVideoWriter();
 
     /** Set the requested video codec before opening a file */
@@ -79,7 +79,7 @@ public:
 
     /** Opens a file for writing audio, video and subtitles. The settings like
      encoders, samplerate etc. has to be set first. */
-    bool openMovieFile (const juce::File& outputFile, const juce::String& format);
+    bool openMovieFile (const juce::File& outputFile, const juce::String& format=juce::String());
 
     /** Closes the movie file. Also flushes all left over samples and frames */
     void closeMovieFile ();

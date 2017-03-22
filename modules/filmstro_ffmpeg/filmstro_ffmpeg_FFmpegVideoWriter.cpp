@@ -41,7 +41,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 
-FFmpegVideoWriter::FFmpegVideoWriter()
+FFmpegVideoWriter::FFmpegVideoWriter (const juce::String& format)
  :  audioWritePosition (0),
     formatContext   (nullptr),
     videoContext    (nullptr),
@@ -61,11 +61,18 @@ FFmpegVideoWriter::FFmpegVideoWriter()
     pixelAspect     (av_make_q (1, 1)),
     audioFifo       (2, 8192)
 {
-    formatContext = nullptr;
     videoTimeBase = av_make_q (1, 24);
     audioTimeBase = av_make_q (1, sampleRate);
     subtitleTimeBase = AV_TIME_BASE_Q;
+
     av_register_all();
+    if (format.isNotEmpty()) {
+        formatContext = avformat_alloc_context();
+        AVOutputFormat* oformat = av_guess_format (format.toRawUTF8(), nullptr, nullptr);
+        if (oformat) {
+            formatContext->oformat = oformat;
+        }
+    }
 }
 
 FFmpegVideoWriter::~FFmpegVideoWriter()
@@ -169,25 +176,46 @@ void FFmpegVideoWriter::copySettingsFromContext (const AVCodecContext* context)
 
 bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile, const juce::String& format)
 {
-    if (formatContext) {
-        avformat_free_context (formatContext);
-    }
-
     videoStreamIdx  = -1;
+    if (videoContext) av_free (&videoContext);
     audioStreamIdx  = -1;
+    if (audioContext) av_free (&audioContext);
     subtitleStreamIdx = -1;
+    if (subtitleContext) av_free (&subtitleContext);
 
     audioWritePosition   = 0;
 
-    /* allocate the output media context */
-    if (format.isEmpty())
-        avformat_alloc_output_context2 (&formatContext, NULL, NULL, outputFile.getFullPathName().toRawUTF8());
-    else
-        avformat_alloc_output_context2 (&formatContext, NULL, format.toRawUTF8(), outputFile.getFullPathName().toRawUTF8());
-
+    if (formatContext) {
+        strlcpy (formatContext->filename, outputFile.getFullPathName().toRawUTF8(), sizeof (formatContext->filename));
+    }
+    else {
+        if (format.isEmpty())
+            avformat_alloc_output_context2 (&formatContext, NULL, NULL, outputFile.getFullPathName().toRawUTF8());
+        else
+            avformat_alloc_output_context2 (&formatContext, NULL, format.toRawUTF8(), outputFile.getFullPathName().toRawUTF8());
+    }
     if (!formatContext) {
         DBG ("Could not open output with format " + format);
         return false;
+    }
+
+    if (videoCodec == AV_CODEC_ID_PROBE) {
+        videoCodec = av_guess_codec (formatContext->oformat,
+                                     nullptr, outputFile.getFullPathName().toRawUTF8(),
+                                     nullptr,
+                                     AVMEDIA_TYPE_VIDEO);
+    }
+    if (audioCodec == AV_CODEC_ID_PROBE) {
+        audioCodec = av_guess_codec (formatContext->oformat,
+                                     nullptr, outputFile.getFullPathName().toRawUTF8(),
+                                     nullptr,
+                                     AVMEDIA_TYPE_AUDIO);
+    }
+    if (subtitleCodec == AV_CODEC_ID_PROBE) {
+        subtitleCodec = av_guess_codec (formatContext->oformat,
+                                        nullptr, outputFile.getFullPathName().toRawUTF8(),
+                                        nullptr,
+                                        AVMEDIA_TYPE_SUBTITLE);
     }
 
     if (videoCodec > AV_CODEC_ID_NONE) {

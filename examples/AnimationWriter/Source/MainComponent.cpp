@@ -38,14 +38,13 @@ public:
                 videoCanvas = Image(Image::RGB, getWidth(), getHeight(), false);
                 videoWriter = new FFmpegVideoWriter ();
                 videoWriter->setVideoSize (getWidth(), getHeight());
-                videoWriter->setVideoCodec (AV_CODEC_ID_H264);
+                videoWriter->setVideoCodec (AV_CODEC_ID_PROBE);
                 videoWriter->setPixelAspect (1, 1);
                 videoWriter->setPixelFormat (AV_PIX_FMT_YUV420P);
                 videoWriter->setTimeBase (AVMEDIA_TYPE_VIDEO, av_make_q (1, 25));
-                videoWriter->openMovieFile (chooser.getResult(), "mpeg");
+                videoWriter->openMovieFile (chooser.getResult());
                 counter = 0;
             }
-
         }
     }
 

@@ -391,7 +391,8 @@ void FFmpegVideoWriter::closeContexts ()
     avcodec_free_context (&audioContext);
     avcodec_free_context (&subtitleContext);
     formatContext   = nullptr;
-    videoScaler     = nullptr;
+    inVideoScaler   = nullptr;
+    outVideoScaler  = nullptr;
     audioWritePosition   = 0;
 }
 
@@ -405,14 +406,14 @@ void FFmpegVideoWriter::writeNextVideoFrame (const juce::Image& image, const juc
 {
     // use scaler and add interface for image processing / e.g. branding
     if (videoContext) {
-        if (! videoScaler) {
-            videoScaler = new FFmpegVideoScaler ();
-            videoScaler->setupScaler (image.getWidth(),
-                                      image.getHeight(),
-                                      AV_PIX_FMT_BGR0,
-                                      videoContext->width,
-                                      videoContext->height,
-                                      videoContext->pix_fmt);
+        if (! outVideoScaler) {
+            outVideoScaler = new FFmpegVideoScaler ();
+            outVideoScaler->setupScaler (image.getWidth(),
+                                         image.getHeight(),
+                                         AV_PIX_FMT_BGR0,
+                                         videoContext->width,
+                                         videoContext->height,
+                                         videoContext->pix_fmt);
         }
         AVFrame* frame = av_frame_alloc ();
         frame->width = videoContext->width;
@@ -428,7 +429,7 @@ void FFmpegVideoWriter::writeNextVideoFrame (const juce::Image& image, const juc
             av_free (&frame);
             return;
         }
-        videoScaler->convertImageToFrame (frame, image);
+        outVideoScaler->convertImageToFrame (frame, image);
         frame->pts = timestamp;
         encodeWriteFrame (frame, AVMEDIA_TYPE_VIDEO);
     }
@@ -538,20 +539,23 @@ int FFmpegVideoWriter::encodeWriteFrame (AVFrame *frame, AVMediaType type) {
     return got_frame == 1;
 }
 
+void FFmpegVideoWriter::videoSizeChanged (const int width, const int height, const AVPixelFormat format)
+{
+    // force a reset of scaler
+    inVideoScaler = nullptr;
+}
+
 void FFmpegVideoWriter::displayNewFrame (const AVFrame* frame)
 {
-    // forward a copy to ffmpeg, the writer will dispose the frame...
-    AVFrame* frameCopy = av_frame_alloc();
-    av_frame_copy_props (frameCopy, frame);
-    av_frame_copy (frameCopy, frame);
-    frameCopy->width = frame->width;
-    frameCopy->height = frame->height;
-    frameCopy->format = frame->format;
-    frameCopy->colorspace = frame->colorspace;
-    frameCopy->sample_aspect_ratio = frame->sample_aspect_ratio;
-    frameCopy->color_range = frame->color_range;
-    frameCopy->pts = frame->pts;
-    encodeWriteFrame (frameCopy, AVMEDIA_TYPE_VIDEO);
+    if (!inVideoScaler) {
+        inVideoScaler = new FFmpegVideoScaler();
+        inVideoScaler->setupScaler (frame->width, frame->height, static_cast<AVPixelFormat> (frame->format),
+                                    videoWidth,   videoHeight,   AV_PIX_FMT_BGR0);
+    }
+    DBG ("Write video frame, pts: " + String (frame->pts));
+    Image picture (Image::RGB, videoWidth, videoHeight, true);
+    inVideoScaler->convertFrameToImage (picture, frame);
+    writeNextVideoFrame (picture, frame->pts);
 }
 
 

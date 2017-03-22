@@ -174,22 +174,21 @@ public:
                 File saveFileName = chooser.getResult();
 
                 FFmpegVideoReader copyReader;
+
+                FFmpegVideoWriter writer;
+                copyReader.addVideoListener (&writer);
                 copyReader.loadMovieFile (videoReader->getVideoFileName());
                 copyReader.prepareToPlay (1024, videoReader->getVideoSamplingRate());
 
-                FFmpegVideoWriter writer;
                 AVRational videoTimeBase = copyReader.getVideoTimeBase();
                 if (videoTimeBase.num > 0) {
                     writer.setTimeBase (AVMEDIA_TYPE_VIDEO, videoTimeBase);
                 }
-                writer.copySettingsFromContext (copyReader.getVideoContext());
-                writer.copySettingsFromContext (copyReader.getAudioContext());
-                writer.copySettingsFromContext (copyReader.getSubtitleContext());
-
-                writer.openMovieFile (saveFileName, "mpeg");
-
-                copyReader.setNextReadPosition (0);
-                copyReader.addVideoListener (&writer);
+                writer.setVideoCodec (AV_CODEC_ID_PROBE);
+                writer.setAudioCodec (AV_CODEC_ID_PROBE);
+                writer.setVideoSize (copyReader.getVideoWidth(), copyReader.getVideoHeight());
+                writer.setPixelFormat (copyReader.getPixelFormat());
+                writer.openMovieFile (saveFileName);
 
                 AudioBuffer<float> buffer;
                 buffer.setSize (2, 1024);

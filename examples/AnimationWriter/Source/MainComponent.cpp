@@ -22,6 +22,8 @@ public:
         counter = -1;
         setSize (800, 600);
         setFramesPerSecond (25);
+        FFmpegVideoWriter writer;
+        DBG (FFmpegVideoWriter::getOutputFormatNames().joinIntoString (";"));
     }
 
     ~MainContentComponent()
@@ -40,7 +42,7 @@ public:
                 videoWriter->setPixelAspect (1, 1);
                 videoWriter->setPixelFormat (AV_PIX_FMT_YUV420P);
                 videoWriter->setTimeBase (AVMEDIA_TYPE_VIDEO, av_make_q (1, 25));
-                videoWriter->openMovieFile (chooser.getResult());
+                videoWriter->openMovieFile (chooser.getResult(), "mpeg");
                 counter = 0;
             }
 

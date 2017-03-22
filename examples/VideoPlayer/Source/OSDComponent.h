@@ -186,7 +186,7 @@ public:
                 writer.copySettingsFromContext (copyReader.getAudioContext());
                 writer.copySettingsFromContext (copyReader.getSubtitleContext());
 
-                writer.openMovieFile (saveFileName);
+                writer.openMovieFile (saveFileName, "mpeg");
 
                 copyReader.setNextReadPosition (0);
                 copyReader.addVideoListener (&writer);

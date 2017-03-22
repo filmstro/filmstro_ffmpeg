@@ -79,7 +79,7 @@ public:
 
     /** Opens a file for writing audio, video and subtitles. The settings like
      encoders, samplerate etc. has to be set first. */
-    bool openMovieFile (const juce::File& outputFile);
+    bool openMovieFile (const juce::File& outputFile, const juce::String& format);
 
     /** Closes the movie file. Also flushes all left over samples and frames */
     void closeMovieFile ();
@@ -94,6 +94,8 @@ public:
      The timestamp has to be set in the frame. */
     void displayNewFrame (const AVFrame*) override;
 
+    /** Returns the names of available output formats */
+    static juce::StringArray getOutputFormatNames ();
 
     // ==============================================================================
 private:

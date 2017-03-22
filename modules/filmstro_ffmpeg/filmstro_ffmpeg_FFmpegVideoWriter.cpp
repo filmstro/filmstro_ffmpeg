@@ -72,6 +72,17 @@ FFmpegVideoWriter::~FFmpegVideoWriter()
 {
 }
 
+juce::StringArray FFmpegVideoWriter::getOutputFormatNames ()
+{
+    StringArray names;
+    AVOutputFormat* format = av_oformat_next (nullptr);
+    while (format) {
+        names.add (format->name);
+        format = av_oformat_next (format);
+    }
+    return names;
+}
+
 void FFmpegVideoWriter::setVideoCodec (const AVCodecID codec)
 {
     videoCodec = codec;
@@ -156,7 +167,7 @@ void FFmpegVideoWriter::copySettingsFromContext (const AVCodecContext* context)
     }
 }
 
-bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
+bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile, const juce::String& format)
 {
     if (formatContext) {
         avformat_free_context (formatContext);
@@ -169,13 +180,15 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
     audioWritePosition   = 0;
 
     /* allocate the output media context */
-    avformat_alloc_output_context2 (&formatContext, NULL, NULL, outputFile.getFullPathName().toRawUTF8());
+    if (format.isEmpty())
+        avformat_alloc_output_context2 (&formatContext, NULL, NULL, outputFile.getFullPathName().toRawUTF8());
+    else
+        avformat_alloc_output_context2 (&formatContext, NULL, format.toRawUTF8(), outputFile.getFullPathName().toRawUTF8());
+
     if (!formatContext) {
-        printf("Could not deduce output format from file extension: using MPEG.\n");
-        avformat_alloc_output_context2 (&formatContext, NULL, "mpeg", outputFile.getFullPathName().toRawUTF8());
-    }
-    if (!formatContext)
+        DBG ("Could not open output with format " + format);
         return false;
+    }
 
     if (videoCodec > AV_CODEC_ID_NONE) {
         AVStream* stream = avformat_new_stream (formatContext, NULL);

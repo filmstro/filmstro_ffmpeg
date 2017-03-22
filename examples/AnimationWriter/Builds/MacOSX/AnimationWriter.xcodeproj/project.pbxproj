@@ -24,7 +24,6 @@
 		2B01C40B1DBA960DB3A55B66 = {isa = PBXBuildFile; fileRef = 607CE387A481957CDD59D90E; };
 		F9E3CA5697F92E60C6FEA102 = {isa = PBXBuildFile; fileRef = 2E827007D0540940ED0F9F46; };
 		6C8D3E4C039EDDF17D7C3A32 = {isa = PBXBuildFile; fileRef = 3D3724A50C678BDCE1ECB60E; };
-		5DE2F006DECB432DC45B4024 = {isa = PBXBuildFile; fileRef = 9BB64D3DBD87986FB2E1AC10; };
 		969DDB33BB60D3A5CEAFBE2A = {isa = PBXBuildFile; fileRef = 47D4B511747E85E54AA8FD76; };
 		600F0C3D09DE65921A0C32FE = {isa = PBXBuildFile; fileRef = 6BEB828B4D10D9DE7362981C; };
 		9D46A4EE183E5DB0D8AA96F5 = {isa = PBXBuildFile; fileRef = 19E7F0B0479C60C4885E23F2; };
@@ -75,7 +74,6 @@
 		97BF18FDF6295096BAFF514A = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		9A1FC7C8B97455D3F0BB3D1F = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_gui_extra"; path = "../../../../../../../JUCE/modules/juce_gui_extra"; sourceTree = "SOURCE_ROOT"; };
 		9B10F2653E367A423CC42C78 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "juce_opengl.mm"; path = "../../JuceLibraryCode/juce_opengl.mm"; sourceTree = "SOURCE_ROOT"; };
-		9BB64D3DBD87986FB2E1AC10 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "filmstro_ffmpeg_FFmpegVideoScaler.cpp"; path = "../../JuceLibraryCode/filmstro_ffmpeg_FFmpegVideoScaler.cpp"; sourceTree = "SOURCE_ROOT"; };
 		9E0769B33582C0556942253C = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		A283AB3BA5E5BB13A672D29F = {isa = PBXFileReference; lastKnownFileType = file; name = "filmstro_ffmpeg"; path = "../../../../modules/filmstro_ffmpeg"; sourceTree = "SOURCE_ROOT"; };
 		A74DAC0C8D5107ABF6AAEF2D = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
@@ -115,7 +113,6 @@
 					52E88916F57D26B99A94EC2B,
 					2E827007D0540940ED0F9F46,
 					3D3724A50C678BDCE1ECB60E,
-					9BB64D3DBD87986FB2E1AC10,
 					47D4B511747E85E54AA8FD76,
 					6BEB828B4D10D9DE7362981C,
 					19E7F0B0479C60C4885E23F2,
@@ -267,7 +264,6 @@
 					2B01C40B1DBA960DB3A55B66,
 					F9E3CA5697F92E60C6FEA102,
 					6C8D3E4C039EDDF17D7C3A32,
-					5DE2F006DECB432DC45B4024,
 					969DDB33BB60D3A5CEAFBE2A,
 					600F0C3D09DE65921A0C32FE,
 					9D46A4EE183E5DB0D8AA96F5,

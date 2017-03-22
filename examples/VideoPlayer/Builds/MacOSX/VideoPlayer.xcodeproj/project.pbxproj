@@ -24,7 +24,6 @@
 		0B1F910B6404C5D2D59AB44F = {isa = PBXBuildFile; fileRef = 174735E85B8049282945305A; };
 		010B3B5AD490BBC1AD321147 = {isa = PBXBuildFile; fileRef = BB17901282A81C872DFC2CEE; };
 		E63645A1C8C424D7D0080ED0 = {isa = PBXBuildFile; fileRef = DE0B3BED9AFCE69B5EB72BA9; };
-		F0E44B8A899D2B67D7810C4C = {isa = PBXBuildFile; fileRef = 046F81DE4290B867D5BA7707; };
 		3DBE46EF55F5D59F4097679A = {isa = PBXBuildFile; fileRef = D7432E8A211D24B9B016BC87; };
 		2DA036DCAFED899986513DB5 = {isa = PBXBuildFile; fileRef = BA456D712B4FA73B33F4087A; };
 		64A65FC085DEF96DD03A9E97 = {isa = PBXBuildFile; fileRef = D0CFD63A990C0FC9B9EC7FEB; };
@@ -38,7 +37,6 @@
 		8CC547BA9EE0996750E45250 = {isa = PBXBuildFile; fileRef = A65B83A034B6AA470FF1AFDD; };
 		2465DFA8FE0F09A4A16515BC = {isa = PBXBuildFile; fileRef = 1180B708B875E0FA415E7133; };
 		FDBD25BBEDF412E5217E0603 = {isa = PBXBuildFile; fileRef = 6E3649B30615F1175CB71E49; };
-		046F81DE4290B867D5BA7707 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "filmstro_ffmpeg_FFmpegVideoScaler.cpp"; path = "../../JuceLibraryCode/filmstro_ffmpeg_FFmpegVideoScaler.cpp"; sourceTree = "SOURCE_ROOT"; };
 		1180B708B875E0FA415E7133 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "juce_gui_extra.mm"; path = "../../JuceLibraryCode/juce_gui_extra.mm"; sourceTree = "SOURCE_ROOT"; };
 		174735E85B8049282945305A = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "ff_meters_LevelMeter.cpp"; path = "../../JuceLibraryCode/ff_meters_LevelMeter.cpp"; sourceTree = "SOURCE_ROOT"; };
 		298413391BA71FD5A419CD37 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OSDComponent.h; path = ../../Source/OSDComponent.h; sourceTree = "SOURCE_ROOT"; };
@@ -116,7 +114,6 @@
 					174735E85B8049282945305A,
 					BB17901282A81C872DFC2CEE,
 					DE0B3BED9AFCE69B5EB72BA9,
-					046F81DE4290B867D5BA7707,
 					D7432E8A211D24B9B016BC87,
 					BA456D712B4FA73B33F4087A,
 					D0CFD63A990C0FC9B9EC7FEB,
@@ -271,7 +268,6 @@
 					0B1F910B6404C5D2D59AB44F,
 					010B3B5AD490BBC1AD321147,
 					E63645A1C8C424D7D0080ED0,
-					F0E44B8A899D2B67D7810C4C,
 					3DBE46EF55F5D59F4097679A,
 					2DA036DCAFED899986513DB5,
 					64A65FC085DEF96DD03A9E97,

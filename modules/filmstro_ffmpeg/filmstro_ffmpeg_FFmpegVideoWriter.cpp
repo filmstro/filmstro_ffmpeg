@@ -196,7 +196,7 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile)
                 videoContext->codec_id  = videoCodec;
                 videoContext->width     = videoWidth;
                 videoContext->height    = videoHeight;
-                videoContext->bit_rate  = 400000;
+                videoContext->bit_rate  = 480000;
                 videoContext->gop_size  = 10;
                 videoContext->max_b_frames = 1;
                 avcodec_parameters_from_context (stream->codecpar, videoContext);

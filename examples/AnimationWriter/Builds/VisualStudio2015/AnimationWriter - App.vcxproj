@@ -148,7 +148,6 @@
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\filmstro_ffmpeg_FFmpegVideoComponent.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\filmstro_ffmpeg_FFmpegVideoReader.cpp"/>
-    <ClCompile Include="..\..\JuceLibraryCode\filmstro_ffmpeg_FFmpegVideoScaler.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\filmstro_ffmpeg_FFmpegVideoWriter.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\juce_audio_basics.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\juce_audio_devices.cpp"/>

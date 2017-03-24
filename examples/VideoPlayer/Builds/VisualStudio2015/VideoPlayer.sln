@@ -1,7 +1,7 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2015
 
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VideoPlayer - App", "VideoPlayer - App.vcxproj", "{1F76C5AB-42A2-1C31-68E7-71A7C91907F6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VideoPlayer - App", "VideoPlayer_App.vcxproj", "{1F76C5AB-42A2-1C31-68E7-71A7C91907F6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VideoPlayer", "VideoPlayer", "{FB06CC8A-1A5D-E74F-6E3B-7D59B3EB9BDA}"
 EndProject
@@ -58,7 +58,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_audio_basics", "juce_a
 		..\..\..\..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.cpp = ..\..\..\..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.cpp
 		..\..\..\..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.h = ..\..\..\..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.h
 		..\..\..\..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.mm = ..\..\..\..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.mm
-		..\..\..\..\..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.h = ..\..\..\..\..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.h
+		..\..\..\..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.h = ..\..\..\..\..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "audio_play_head", "audio_play_head", "{EBF046F5-7CA3-37D3-9D14-C9A7C0217454}"
@@ -161,7 +161,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_audio_devices", "juce_
 		..\..\..\..\..\..\JUCE\modules\juce_audio_devices\juce_audio_devices.cpp = ..\..\..\..\..\..\JUCE\modules\juce_audio_devices\juce_audio_devices.cpp
 		..\..\..\..\..\..\JUCE\modules\juce_audio_devices\juce_audio_devices.h = ..\..\..\..\..\..\JUCE\modules\juce_audio_devices\juce_audio_devices.h
 		..\..\..\..\..\..\JUCE\modules\juce_audio_devices\juce_audio_devices.mm = ..\..\..\..\..\..\JUCE\modules\juce_audio_devices\juce_audio_devices.mm
-		..\..\..\..\..\..\..\JUCE\modules\juce_audio_devices\juce_audio_devices.h = ..\..\..\..\..\..\..\JUCE\modules\juce_audio_devices\juce_audio_devices.h
+		..\..\..\..\..\..\JUCE\modules\juce_audio_devices\juce_audio_devices.h = ..\..\..\..\..\..\JUCE\modules\juce_audio_devices\juce_audio_devices.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "audio_io", "audio_io", "{2FB2505D-2839-6A28-8B43-608B6961375F}"
@@ -216,7 +216,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_audio_formats", "juce_
 		..\..\..\..\..\..\JUCE\modules\juce_audio_formats\juce_audio_formats.cpp = ..\..\..\..\..\..\JUCE\modules\juce_audio_formats\juce_audio_formats.cpp
 		..\..\..\..\..\..\JUCE\modules\juce_audio_formats\juce_audio_formats.h = ..\..\..\..\..\..\JUCE\modules\juce_audio_formats\juce_audio_formats.h
 		..\..\..\..\..\..\JUCE\modules\juce_audio_formats\juce_audio_formats.mm = ..\..\..\..\..\..\JUCE\modules\juce_audio_formats\juce_audio_formats.mm
-		..\..\..\..\..\..\..\JUCE\modules\juce_audio_formats\juce_audio_formats.h = ..\..\..\..\..\..\..\JUCE\modules\juce_audio_formats\juce_audio_formats.h
+		..\..\..\..\..\..\JUCE\modules\juce_audio_formats\juce_audio_formats.h = ..\..\..\..\..\..\JUCE\modules\juce_audio_formats\juce_audio_formats.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "codecs", "codecs", "{39987945-FE5D-E386-3C47-064B2DF8EF23}"
@@ -438,7 +438,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_audio_processors", "ju
 		..\..\..\..\..\..\JUCE\modules\juce_audio_processors\juce_audio_processors.cpp = ..\..\..\..\..\..\JUCE\modules\juce_audio_processors\juce_audio_processors.cpp
 		..\..\..\..\..\..\JUCE\modules\juce_audio_processors\juce_audio_processors.h = ..\..\..\..\..\..\JUCE\modules\juce_audio_processors\juce_audio_processors.h
 		..\..\..\..\..\..\JUCE\modules\juce_audio_processors\juce_audio_processors.mm = ..\..\..\..\..\..\JUCE\modules\juce_audio_processors\juce_audio_processors.mm
-		..\..\..\..\..\..\..\JUCE\modules\juce_audio_processors\juce_audio_processors.h = ..\..\..\..\..\..\..\JUCE\modules\juce_audio_processors\juce_audio_processors.h
+		..\..\..\..\..\..\JUCE\modules\juce_audio_processors\juce_audio_processors.h = ..\..\..\..\..\..\JUCE\modules\juce_audio_processors\juce_audio_processors.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "format", "format", "{15387D64-C701-2C1A-5DEA-C056077E178A}"
@@ -511,7 +511,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_audio_utils", "juce_au
 		..\..\..\..\..\..\JUCE\modules\juce_audio_utils\juce_audio_utils.cpp = ..\..\..\..\..\..\JUCE\modules\juce_audio_utils\juce_audio_utils.cpp
 		..\..\..\..\..\..\JUCE\modules\juce_audio_utils\juce_audio_utils.h = ..\..\..\..\..\..\JUCE\modules\juce_audio_utils\juce_audio_utils.h
 		..\..\..\..\..\..\JUCE\modules\juce_audio_utils\juce_audio_utils.mm = ..\..\..\..\..\..\JUCE\modules\juce_audio_utils\juce_audio_utils.mm
-		..\..\..\..\..\..\..\JUCE\modules\juce_audio_utils\juce_audio_utils.h = ..\..\..\..\..\..\..\JUCE\modules\juce_audio_utils\juce_audio_utils.h
+		..\..\..\..\..\..\JUCE\modules\juce_audio_utils\juce_audio_utils.h = ..\..\..\..\..\..\JUCE\modules\juce_audio_utils\juce_audio_utils.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "audio_cd", "audio_cd", "{2A0F5ACB-117B-DBDF-01A4-637E97E507E9}"
@@ -566,7 +566,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_core", "juce_core", "{
 		..\..\..\..\..\..\JUCE\modules\juce_core\juce_core.cpp = ..\..\..\..\..\..\JUCE\modules\juce_core\juce_core.cpp
 		..\..\..\..\..\..\JUCE\modules\juce_core\juce_core.h = ..\..\..\..\..\..\JUCE\modules\juce_core\juce_core.h
 		..\..\..\..\..\..\JUCE\modules\juce_core\juce_core.mm = ..\..\..\..\..\..\JUCE\modules\juce_core\juce_core.mm
-		..\..\..\..\..\..\..\JUCE\modules\juce_core\juce_core.h = ..\..\..\..\..\..\..\JUCE\modules\juce_core\juce_core.h
+		..\..\..\..\..\..\JUCE\modules\juce_core\juce_core.h = ..\..\..\..\..\..\JUCE\modules\juce_core\juce_core.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "containers", "containers", "{65518DFA-AA0E-33C8-3816-2792B73EE256}"
@@ -872,7 +872,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_data_structures", "juc
 		..\..\..\..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.cpp = ..\..\..\..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.cpp
 		..\..\..\..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.h = ..\..\..\..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.h
 		..\..\..\..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.mm = ..\..\..\..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.mm
-		..\..\..\..\..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.h = ..\..\..\..\..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.h
+		..\..\..\..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.h = ..\..\..\..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app_properties", "app_properties", "{4A705E23-0141-66F3-2594-CD9A0BF44C32}"
@@ -907,7 +907,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_events", "juce_events"
 		..\..\..\..\..\..\JUCE\modules\juce_events\juce_events.cpp = ..\..\..\..\..\..\JUCE\modules\juce_events\juce_events.cpp
 		..\..\..\..\..\..\JUCE\modules\juce_events\juce_events.h = ..\..\..\..\..\..\JUCE\modules\juce_events\juce_events.h
 		..\..\..\..\..\..\JUCE\modules\juce_events\juce_events.mm = ..\..\..\..\..\..\JUCE\modules\juce_events\juce_events.mm
-		..\..\..\..\..\..\..\JUCE\modules\juce_events\juce_events.h = ..\..\..\..\..\..\..\JUCE\modules\juce_events\juce_events.h
+		..\..\..\..\..\..\JUCE\modules\juce_events\juce_events.h = ..\..\..\..\..\..\JUCE\modules\juce_events\juce_events.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "broadcasters", "broadcasters", "{9E47598B-2577-465A-C90A-32404F7850B2}"
@@ -976,7 +976,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_graphics", "juce_graph
 		..\..\..\..\..\..\JUCE\modules\juce_graphics\juce_graphics.cpp = ..\..\..\..\..\..\JUCE\modules\juce_graphics\juce_graphics.cpp
 		..\..\..\..\..\..\JUCE\modules\juce_graphics\juce_graphics.h = ..\..\..\..\..\..\JUCE\modules\juce_graphics\juce_graphics.h
 		..\..\..\..\..\..\JUCE\modules\juce_graphics\juce_graphics.mm = ..\..\..\..\..\..\JUCE\modules\juce_graphics\juce_graphics.mm
-		..\..\..\..\..\..\..\JUCE\modules\juce_graphics\juce_graphics.h = ..\..\..\..\..\..\..\JUCE\modules\juce_graphics\juce_graphics.h
+		..\..\..\..\..\..\JUCE\modules\juce_graphics\juce_graphics.h = ..\..\..\..\..\..\JUCE\modules\juce_graphics\juce_graphics.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "colour", "colour", "{F3F11CDE-52EC-66F8-F2D7-53315CF3AAFF}"
@@ -1188,7 +1188,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_gui_basics", "juce_gui
 		..\..\..\..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.cpp = ..\..\..\..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.cpp
 		..\..\..\..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.h = ..\..\..\..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.h
 		..\..\..\..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.mm = ..\..\..\..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.mm
-		..\..\..\..\..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.h = ..\..\..\..\..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.h
+		..\..\..\..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.h = ..\..\..\..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "application", "application", "{3EC53F5E-7B4C-388B-D81F-383A9790312D}"
@@ -1521,7 +1521,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_gui_extra", "juce_gui_
 		..\..\..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.cpp = ..\..\..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.cpp
 		..\..\..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h = ..\..\..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h
 		..\..\..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.mm = ..\..\..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.mm
-		..\..\..\..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h = ..\..\..\..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h
+		..\..\..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h = ..\..\..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "code_editor", "code_editor", "{46D23535-DF3D-1036-B282-994A43B10DAE}"
@@ -1598,7 +1598,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_opengl", "juce_opengl"
 		..\..\..\..\..\..\JUCE\modules\juce_opengl\juce_opengl.cpp = ..\..\..\..\..\..\JUCE\modules\juce_opengl\juce_opengl.cpp
 		..\..\..\..\..\..\JUCE\modules\juce_opengl\juce_opengl.h = ..\..\..\..\..\..\JUCE\modules\juce_opengl\juce_opengl.h
 		..\..\..\..\..\..\JUCE\modules\juce_opengl\juce_opengl.mm = ..\..\..\..\..\..\JUCE\modules\juce_opengl\juce_opengl.mm
-		..\..\..\..\..\..\..\JUCE\modules\juce_opengl\juce_opengl.h = ..\..\..\..\..\..\..\JUCE\modules\juce_opengl\juce_opengl.h
+		..\..\..\..\..\..\JUCE\modules\juce_opengl\juce_opengl.h = ..\..\..\..\..\..\JUCE\modules\juce_opengl\juce_opengl.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "geometry", "geometry", "{AE53579D-78DA-DB07-51BB-6B14BAAD222A}"

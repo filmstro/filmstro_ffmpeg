@@ -40,7 +40,6 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-
 FFmpegVideoWriter::FFmpegVideoWriter (const juce::String& format)
  :  audioWritePosition (0),
     formatContext   (nullptr),
@@ -63,7 +62,7 @@ FFmpegVideoWriter::FFmpegVideoWriter (const juce::String& format)
 {
     videoTimeBase = av_make_q (1, 24);
     audioTimeBase = av_make_q (1, sampleRate);
-    subtitleTimeBase = AV_TIME_BASE_Q;
+    subtitleTimeBase = av_make_q (1, AV_TIME_BASE);
 
     av_register_all();
     if (format.isNotEmpty()) {
@@ -186,7 +185,8 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile, const juce:
     audioWritePosition   = 0;
 
     if (formatContext) {
-        strlcpy (formatContext->filename, outputFile.getFullPathName().toRawUTF8(), sizeof (formatContext->filename));
+        String name (outputFile.getFullPathName ());
+        memcpy (formatContext->filename, name.toRawUTF8 (), jmin (name.getNumBytesAsUTF8 () + 1, sizeof (formatContext->filename)));
     }
     else {
         if (format.isEmpty())

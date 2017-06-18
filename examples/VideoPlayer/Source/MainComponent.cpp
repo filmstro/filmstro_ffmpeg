@@ -49,6 +49,7 @@ class VideoComponentWithDropper :   public FFmpegVideoComponent,
 public:
     VideoComponentWithDropper (FFmpegVideoReader* readerToOpenFiles)
     {
+        setWantsKeyboardFocus (false);
         setVideoReader (readerToOpenFiles);
     }
 
@@ -81,6 +82,7 @@ public:
     //==============================================================================
     MainContentComponent()
     {
+        setWantsKeyboardFocus (true);
         videoAspectRatio = 1.77;
 
         videoReader = new FFmpegVideoReader (384000, 30);
@@ -96,7 +98,7 @@ public:
         addAndMakeVisible (osdComponent);
 
         // specify the number of input and output channels that we want to open
-        setAudioChannels (0, 6);
+        setAudioChannels (0, 2);
 
 #ifdef DEBUG
         if (AudioIODevice* device = deviceManager.getCurrentAudioDevice()) {
@@ -130,7 +132,7 @@ public:
         if (videoReader)     videoReader->prepareToPlay (samplesPerBlockExpected, sampleRate);
         if (transportSource) transportSource->prepareToPlay (samplesPerBlockExpected, sampleRate);
 
-        readBuffer.setSize (6, samplesPerBlockExpected);
+        readBuffer.setSize (2, samplesPerBlockExpected);
     }
 
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override
@@ -146,6 +148,7 @@ public:
 #endif
 
         for (int i=0; i < bufferToFill.buffer->getNumChannels(); ++i) {
+            
             bufferToFill.buffer->copyFrom (i, bufferToFill.startSample,
                                            readBuffer.getReadPointer (i),
                                            bufferToFill.numSamples);
@@ -188,6 +191,7 @@ public:
         osdComponent->setVideoLength (videoReader->getVideoDuration ());
 
         transportSource->setSource (videoReader, 0, nullptr, videoReader->getVideoSamplingRate(), videoReader->getVideoChannels());
+        readBuffer.setSize (videoReader->getVideoChannels(), readBuffer.getNumSamples());
 
         videoAspectRatio = videoReader->getVideoAspectRatio ();
         resized ();
@@ -224,6 +228,18 @@ public:
 #endif
     }
 
+    bool keyPressed (const KeyPress &key) override
+    {
+        if (key == KeyPress::spaceKey) {
+            if (transportSource->isPlaying()) {
+                transportSource->stop();
+                return true;
+            }
+            transportSource->start();
+            return true;
+        }
+        return false;
+    }
 
 private:
     //==============================================================================

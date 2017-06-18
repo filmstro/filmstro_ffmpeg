@@ -51,39 +51,47 @@ public:
         ffwdSpeed = 2;
 
         setInterceptsMouseClicks (false, true);
+        setWantsKeyboardFocus (false);
 
         openFile = new TextButton ("Open", "Open");
         openFile->addListener (this);
+        openFile->setWantsKeyboardFocus (false);
         addAndMakeVisible (openFile);
         flexBox.items.add (FlexItem (*openFile).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
 
         saveFile = new TextButton ("Save", "Save");
         saveFile->addListener (this);
+        saveFile->setWantsKeyboardFocus (false);
         addAndMakeVisible (saveFile);
         flexBox.items.add (FlexItem (*saveFile).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
 
         seekBar = new Slider (Slider::LinearHorizontal, Slider::NoTextBox);
         addAndMakeVisible (seekBar);
         seekBar->addListener (this);
+        seekBar->setWantsKeyboardFocus (false);
         flexBox.items.add (FlexItem (*seekBar).withFlex (6.0, 1.0, 0.5).withHeight (20.0));
 
         stop = new TextButton ("Stop", "Stop");
         stop->addListener (this);
+        stop->setWantsKeyboardFocus (false);
         addAndMakeVisible (stop);
         flexBox.items.add (FlexItem (*stop).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
 
         pause = new TextButton ("Pause", "Pause");
         pause->addListener (this);
+        pause->setWantsKeyboardFocus (false);
         addAndMakeVisible (pause);
         flexBox.items.add (FlexItem (*pause).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
 
         play = new TextButton ("Play", "Play");
         play->addListener (this);
+        play->setWantsKeyboardFocus (false);
         addAndMakeVisible (play);
         flexBox.items.add (FlexItem (*play).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
 
         ffwd = new TextButton ("FFWD", "FFWD");
         ffwd->addListener (this);
+        ffwd->setWantsKeyboardFocus (false);
         addAndMakeVisible (ffwd);
         flexBox.items.add (FlexItem (*ffwd).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
 
@@ -224,15 +232,18 @@ public:
             if (relTime < 2000) {
                 component.setVisible (true);
                 component.setAlpha (1.0);
-                component.setMouseCursor (MouseCursor::StandardCursorType::NormalCursor);
+                if (Component* parent = component.getParentComponent())
+                    parent->setMouseCursor (MouseCursor::StandardCursorType::NormalCursor);
             }
             else if (relTime < 2300) {
                 component.setAlpha (1.0 - jmax (0.0, (relTime - 2000.0) / 300.0));
-                component.setMouseCursor (MouseCursor::StandardCursorType::NoCursor);
             }
             else {
                 component.setVisible (false);
-                component.setMouseCursor (MouseCursor::StandardCursorType::NoCursor);
+                if (Component* parent = component.getParentComponent()) {
+                    parent->setMouseCursor (MouseCursor::StandardCursorType::NoCursor);
+                    Desktop::getInstance().getMainMouseSource().forceMouseCursorUpdate();
+                }
             }
         }
 

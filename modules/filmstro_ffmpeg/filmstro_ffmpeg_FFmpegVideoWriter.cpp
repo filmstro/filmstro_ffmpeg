@@ -247,6 +247,7 @@ bool FFmpegVideoWriter::openMovieFile (const juce::File& outputFile, const juce:
                 if (encoder->id == AV_CODEC_ID_H264) {
                     av_dict_set (&options, "preset", "slow", 0);
                     av_dict_set (&options, "tune", "film", 0);
+                    av_opt_set (videoContext->priv_data, "profile", "baseline", AV_OPT_SEARCH_CHILDREN);
                 }
 
                 int ret = avcodec_open2 (videoContext, encoder, &options);
@@ -419,6 +420,7 @@ void FFmpegVideoWriter::writeNextVideoFrame (const juce::Image& image, const juc
         frame->width = videoContext->width;
         frame->height = videoContext->height;
         frame->format = videoContext->pix_fmt;
+        frame->pts = timestamp;
         av_frame_set_color_range (frame, videoContext->color_range);
         int ret = av_image_alloc(frame->data, frame->linesize,
                                  videoContext->width,
@@ -430,7 +432,6 @@ void FFmpegVideoWriter::writeNextVideoFrame (const juce::Image& image, const juc
             return;
         }
         outVideoScaler->convertImageToFrame (frame, image);
-        frame->pts = timestamp;
         encodeWriteFrame (frame, AVMEDIA_TYPE_VIDEO);
     }
 }

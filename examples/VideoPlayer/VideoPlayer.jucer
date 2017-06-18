@@ -2,7 +2,8 @@
 
 <JUCERPROJECT id="agVUOj" name="VideoPlayer" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.VideoLibTest" includeBinaryInAppConfig="1"
-              jucerVersion="4.3.1">
+              jucerVersion="5.0.2" displaySplashScreen="0" reportAppUsage="1"
+              splashScreenColour="Dark">
   <MAINGROUP id="N4nDda" name="VideoPlayer">
     <GROUP id="{3157C055-224D-BD2E-9A8C-CDE725FE3ADB}" name="Source">
       <FILE id="sWTx6g" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
@@ -14,7 +15,7 @@
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-reserved-user-defined-literal&#10;-I${FFMPEG_ROOT}/include"
                extraLinkerFlags="-L${FFMPEG_ROOT}/lib" externalLibraries="avformat&#10;avutil&#10;avcodec&#10;swscale&#10;swresample"
-               extraDefs="FFMPEG_ROOT=../../../../../ffmpeg/build">
+               extraDefs="FFMPEG_ROOT=/usr/local">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="VideoPlayer"
                        osxCompatibility="10.7 SDK" cppLanguageStandard="c++11" cppLibType="libc++"
@@ -68,20 +69,20 @@
     </VS2015>
   </EXPORTFORMATS>
   <MODULES>
-    <MODULE id="filmstro_audiohelpers" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="filmstro_ffmpeg" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="filmstro_audiohelpers" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="filmstro_ffmpeg" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
   </MODULES>
   <JUCEOPTIONS/>
   <LIVE_SETTINGS>

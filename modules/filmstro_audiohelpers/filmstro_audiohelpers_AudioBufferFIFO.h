@@ -65,6 +65,12 @@ public:
         reset ();
     }
 
+    /*< Resize the buffer with new number of channels */
+    void setSize (const int channels)
+    {
+        buffer.setSize (channels, getTotalSize());
+    }
+
     /*< Push samples into the FIFO from raw float arrays */
     void addToFifo (const FloatType** samples, int numSamples)
     {
@@ -139,6 +145,7 @@ public:
     {
         const int readSamples = numSamples > 0 ? numSamples : info.numSamples;
         jassert (getNumReady() >= readSamples);
+        jassert (info.buffer && info.buffer->getNumChannels() == buffer.getNumChannels());
 
         int start1, size1, start2, size2;
         prepareToRead (readSamples, start1, size1, start2, size2);

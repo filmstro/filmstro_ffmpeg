@@ -53,7 +53,8 @@
 
 FFmpegVideoReader::FFmpegVideoReader (const int audioFifoSize, const int videoFifoSize)
  :  looping                 (false),
-    sampleRate              (0),
+    outputSampleRate        (0),
+    outputLayout            (AudioChannelSet::stereo()),
     resampleFactor          (1.0),
     currentTimeStamp        (0.0),
     nextReadPos             (0),
@@ -81,7 +82,7 @@ bool FFmpegVideoReader::loadMovieFile (const File& inputFile)
         return false;
     }
 
-    if (decoder.loadMovieFile (inputFile)) {
+    if (decoder.loadMovieFile (inputFile, outputSampleRate, AudioChannelSet::stereo())) {
         videoFileName = inputFile;
         return true;
     }
@@ -106,8 +107,8 @@ double FFmpegVideoReader::getFramesPerSecond () const
 
 double FFmpegVideoReader::getCurrentTimeStamp() const
 {
-    if (sampleRate > 0)
-        return static_cast<double> (nextReadPos) / sampleRate;
+    if (outputSampleRate > 0)
+        return static_cast<double> (nextReadPos) / outputSampleRate;
     return 0;
 }
 
@@ -124,6 +125,12 @@ int FFmpegVideoReader::getVideoSamplingRate () const
 int FFmpegVideoReader::getVideoChannels () const
 {
     return decoder.getNumChannels();
+}
+
+void FFmpegVideoReader::setAudioChannelLayout (const juce::AudioChannelSet layout)
+{
+    outputLayout = layout;
+    audioFifo.setSize (outputLayout.size());
 }
 
 // ==============================================================================
@@ -204,10 +211,12 @@ juce::String FFmpegVideoReader::formatTimeCode (const double tc)
 // from AudioSource
 // ==============================================================================
 
-void FFmpegVideoReader::prepareToPlay (int samplesPerBlockExpected, double newSampleRate)
+void FFmpegVideoReader::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
-    const int numChannels = getVideoChannels();
-    sampleRate = getVideoSamplingRate();
+    ignoreUnused (samplesPerBlockExpected);
+
+    const int numChannels = outputLayout.size();
+    outputSampleRate = sampleRate;
 
     audioFifo.setSize (numChannels, 192000);
 
@@ -216,16 +225,15 @@ void FFmpegVideoReader::prepareToPlay (int samplesPerBlockExpected, double newSa
 
 void FFmpegVideoReader::releaseResources ()
 {
-    audioFifo.setSize (2, 8192);
+    //audioFifo.setSize (2, 8192);
 }
 
 void FFmpegVideoReader::getNextAudioBlock (const juce::AudioSourceChannelInfo &bufferToFill)
 {
-    double videoSampleRate = getVideoSamplingRate();
-    currentTimeStamp += (bufferToFill.numSamples / videoSampleRate);
+    currentTimeStamp += (bufferToFill.numSamples / outputSampleRate);
 
     // this triggers also reading of new video frame
-    decoder.setCurrentPTS (static_cast<double>(nextReadPos) / sampleRate);
+    decoder.setCurrentPTS (static_cast<double>(nextReadPos) / outputSampleRate);
 #ifdef DEBUG_LOG_PACKETS
     DBG ("Play audio block: " + String (nextReadPos) + " PTS: " + String (static_cast<double>(nextReadPos) / sampleRate));
 #endif // DEBUG_LOG_PACKETS
@@ -259,8 +267,8 @@ bool FFmpegVideoReader::waitForNextAudioBlockReady (const juce::AudioSourceChann
 void FFmpegVideoReader::setNextReadPosition (juce::int64 newPosition)
 {
     nextReadPos = newPosition;
-    if (sampleRate > 0) {
-        decoder.setCurrentPTS (nextReadPos / sampleRate, true);
+    if (outputSampleRate > 0) {
+        decoder.setCurrentPTS (nextReadPos / outputSampleRate, true);
     }
 }
 
@@ -272,7 +280,7 @@ int64 FFmpegVideoReader::getNextReadPosition () const
 
 int64 FFmpegVideoReader::getTotalLength () const
 {
-    return static_cast<int64> (getVideoDuration() * sampleRate);
+    return static_cast<int64> (getVideoDuration() * outputSampleRate);
 }
 
 /** Returns true if this source is actually playing in a loop. */
@@ -332,6 +340,7 @@ FFmpegVideoReader::DecoderThread::DecoderThread (AudioBufferFIFO<float>& fifo, c
 
     audioFrame = av_frame_alloc();
 
+    buffer.setSize (2, 2048, false, true);
 }
 
 FFmpegVideoReader::DecoderThread::~DecoderThread ()
@@ -347,7 +356,9 @@ FFmpegVideoReader::DecoderThread::~DecoderThread ()
 }
 
 
-bool FFmpegVideoReader::DecoderThread::loadMovieFile (const juce::File& inputFile)
+bool FFmpegVideoReader::DecoderThread::loadMovieFile (const juce::File& inputFile,
+                                                      const double sampleRate,
+                                                      const juce::AudioChannelSet layout)
 {
     if (formatContext) {
         closeMovieFile ();
@@ -370,13 +381,22 @@ bool FFmpegVideoReader::DecoderThread::loadMovieFile (const juce::File& inputFil
     if (isPositiveAndBelow (audioStreamIdx, static_cast<int> (formatContext->nb_streams))) {
         audioContext->request_sample_fmt = AV_SAMPLE_FMT_FLTP;
         //audioContext->request_channel_layout = AV_CH_LAYOUT_STEREO_DOWNMIX;
+        resampler.setupFrameToBufferResampler (audioContext->channel_layout,
+                                               audioContext->sample_rate,
+                                               audioContext->sample_fmt,
+                                               // FIXME:
+                                               layout,
+                                               sampleRate);
     }
 
     videoStreamIdx = openCodecContext (&videoContext, AVMEDIA_TYPE_VIDEO, true);
-    if (isPositiveAndBelow (videoStreamIdx, static_cast<int> (formatContext->nb_streams))) {
-        videoListeners.call (&FFmpegVideoListener::videoSizeChanged, videoContext->width,
-                                                                     videoContext->height,
-                                                                     videoContext->pix_fmt);
+    if (isPositiveAndBelow (videoStreamIdx,
+                            static_cast<int> (formatContext->nb_streams)))
+    {
+        videoListeners.call (&FFmpegVideoListener::videoSizeChanged,
+                             videoContext->width,
+                             videoContext->height,
+                             videoContext->pix_fmt);
     }
 
     av_dump_format (formatContext, 0, inputFile.getFullPathName().toRawUTF8(), 0);
@@ -501,19 +521,24 @@ int FFmpegVideoReader::DecoderThread::decodeAudioPacket (AVPacket packet)
 
         if (got_frame && decoded > 0 && audioFrame->extended_data != nullptr) {
             const int channels   = av_get_channel_layout_nb_channels (audioFrame->channel_layout);
-            const int numSamples = audioFrame->nb_samples;
+            int numSamples = 0;
+
+            if (resampler.isSetup()) {
+                numSamples = resampler.convertFrameToBuffer (buffer, audioFrame);
+            }
 
             int offset = (currentPTS - framePTSsecs) * audioContext->sample_rate;
             if (offset > 100) {
                 if (offset < numSamples) {
                     outputNumSamples = numSamples-offset;
-                    AudioBuffer<float> subset ((float* const*)audioFrame->extended_data, channels, offset, outputNumSamples);
+                    AudioBuffer<float> subset (buffer.getArrayOfWritePointers(),
+                                               channels, offset, outputNumSamples);
                     audioFifo.addToFifo (subset);
                 }
             }
             else {
                 outputNumSamples = numSamples;
-                audioFifo.addToFifo ((const float **)audioFrame->extended_data, numSamples);
+                audioFifo.addToFifo (buffer, numSamples);
             }
         }
 

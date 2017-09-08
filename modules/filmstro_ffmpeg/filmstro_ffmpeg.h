@@ -81,6 +81,7 @@ extern "C" {
 
 #include "filmstro_ffmpeg_FFmpegVideoListener.h"
 #include "filmstro_ffmpeg_FFmpegVideoScaler.h"
+#include "filmstro_ffmpeg_FFmpegAudioResampler.h"
 #include "filmstro_ffmpeg_FFmpegVideoReader.h"
 #include "filmstro_ffmpeg_FFmpegVideoWriter.h"
 #include "filmstro_ffmpeg_FFmpegVideoComponent.h"

@@ -77,7 +77,9 @@ public:
 
         virtual ~DecoderThread ();
 
-        bool loadMovieFile (const juce::File& inputFile);
+        bool loadMovieFile (const juce::File& inputFile,
+                            const double sampleRate,
+                            const juce::AudioChannelSet layout);
 
         void closeMovieFile ();
 
@@ -170,6 +172,8 @@ public:
 
         juce::ListenerList<FFmpegVideoListener> videoListeners;
 
+        FFmpegAudioResampler     resampler;
+
         /** Buffer for reading */
         juce::AudioBuffer<float> buffer;
 
@@ -204,6 +208,8 @@ public:
     /** returns the number of audio channels in the video file. Make sure you call 
      getNextAudioBuffer with the same number of channels */
     int     getVideoChannels () const;
+
+    void setAudioChannelLayout (const juce::AudioChannelSet layout);
 
     /** returns the audio sample format in the video file. 
      The FFmpegVideoReader will convert into discrete channels of float values */
@@ -288,7 +294,9 @@ private:
 
     bool        looping;
 
-    int         sampleRate;
+    int         outputSampleRate;
+
+    juce::AudioChannelSet outputLayout;
 
     double      framesPerSec;
 

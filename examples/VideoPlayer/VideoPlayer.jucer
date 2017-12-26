@@ -2,8 +2,8 @@
 
 <JUCERPROJECT id="agVUOj" name="VideoPlayer" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.VideoLibTest" includeBinaryInAppConfig="1"
-              jucerVersion="5.0.2" displaySplashScreen="0" reportAppUsage="1"
-              splashScreenColour="Dark">
+              jucerVersion="5.2.0" displaySplashScreen="0" reportAppUsage="1"
+              splashScreenColour="Dark" cppLanguageStandard="11" companyCopyright="">
   <MAINGROUP id="N4nDda" name="VideoPlayer">
     <GROUP id="{3157C055-224D-BD2E-9A8C-CDE725FE3ADB}" name="Source">
       <FILE id="sWTx6g" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
@@ -19,10 +19,10 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="VideoPlayer"
                        osxCompatibility="10.7 SDK" cppLanguageStandard="c++11" cppLibType="libc++"
-                       customXcodeFlags=""/>
+                       customXcodeFlags="" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="VideoPlayer"
                        osxCompatibility="10.7 SDK" cppLanguageStandard="c++11" cppLibType="libc++"
-                       customXcodeFlags=""/>
+                       customXcodeFlags="" enablePluginBinaryCopyStep="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../../../../JUCE/modules"/>
@@ -46,9 +46,11 @@
             externalLibraries="avformat.lib&#10;avutil.lib&#10;avcodec.lib&#10;swscale.lib&#10;swresample.lib">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="1" targetName="VideoLibTest"/>
+                       isDebug="1" optimisation="1" targetName="VideoLibTest" debugInformationFormat="ProgramDatabase"
+                       enablePluginBinaryCopyStep="0"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="0" optimisation="3" targetName="VideoLibTest"/>
+                       isDebug="0" optimisation="3" targetName="VideoLibTest" debugInformationFormat="ProgramDatabase"
+                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="..\..\..\..\JUCE\modules"/>

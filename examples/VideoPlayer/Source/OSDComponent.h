@@ -95,6 +95,14 @@ public:
         addAndMakeVisible (ffwd);
         flexBox.items.add (FlexItem (*ffwd).withFlex (1.0, 1.0, 0.5).withHeight (20.0));
 
+        openFile->setConnectedEdges (TextButton::ConnectedOnRight);
+        saveFile->setConnectedEdges (TextButton::ConnectedOnLeft);
+
+        stop->setConnectedEdges  (TextButton::ConnectedOnRight);
+        pause->setConnectedEdges (TextButton::ConnectedOnRight | TextButton::ConnectedOnLeft);
+        play->setConnectedEdges  (TextButton::ConnectedOnRight | TextButton::ConnectedOnLeft);
+        ffwd->setConnectedEdges  (TextButton::ConnectedOnLeft);
+
         idle = new MouseIdle (*this);
     }
 

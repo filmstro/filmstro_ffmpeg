@@ -137,6 +137,8 @@ public:
 
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override
     {
+        auto numInputChannels = videoReader->getVideoChannels();
+
         AudioSourceChannelInfo info (&readBuffer,
                                      bufferToFill.startSample,
                                      bufferToFill.numSamples);
@@ -147,18 +149,24 @@ public:
         meterSource.measureBlock (readBuffer);
 #endif
 
-        for (int i=0; i < bufferToFill.buffer->getNumChannels(); ++i) {
-            
-            bufferToFill.buffer->copyFrom (i, bufferToFill.startSample,
-                                           readBuffer.getReadPointer (i),
-                                           bufferToFill.numSamples);
-            if (bufferToFill.buffer->getNumChannels() == 2 &&
-                readBuffer.getNumChannels() > 2) {
-                // add center to left and right
-                bufferToFill.buffer->addFrom (i, bufferToFill.startSample,
-                                              readBuffer.getReadPointer (2),
-                                              bufferToFill.numSamples, 0.7);
+        if (numInputChannels > 0)
+        {
+            for (int i=0; i < bufferToFill.buffer->getNumChannels(); ++i) {
+
+                bufferToFill.buffer->copyFrom (i, bufferToFill.startSample,
+                                               readBuffer.getReadPointer (i % numInputChannels),
+                                               bufferToFill.numSamples);
+                if (bufferToFill.buffer->getNumChannels() == 2 &&
+                    readBuffer.getNumChannels() > 2) {
+                    // add center to left and right
+                    bufferToFill.buffer->addFrom (i, bufferToFill.startSample,
+                                                  readBuffer.getReadPointer (2),
+                                                  bufferToFill.numSamples, 0.7);
+                }
             }
+        }
+        else{
+            bufferToFill.clearActiveBufferRegion();
         }
     }
 

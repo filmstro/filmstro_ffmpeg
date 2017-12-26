@@ -619,7 +619,7 @@ void FFmpegVideoReader::DecoderThread::setCurrentPTS (const double pts, bool see
     videoListeners.call (&FFmpegVideoListener::presentationTimestampChanged, pts);
 
     // find highest PTS < currentPTS
-    int availableFrames = (videoFrames.size() + videoFifoWrite - videoFifoRead) % videoFrames.size();
+    auto availableFrames = (videoFrames.size() + videoFifoWrite - videoFifoRead) % videoFrames.size();
     if (availableFrames < 1) {
         // No frame read!
         DBG ("No frame available!");
@@ -627,8 +627,8 @@ void FFmpegVideoReader::DecoderThread::setCurrentPTS (const double pts, bool see
         return;
     }
 
-    int read = videoFifoRead;
-    int i=0;
+    auto read = videoFifoRead;
+    auto i=0;
 
     while ((videoFrames [(read + i) % videoFrames.size()].first < pts) && i < (availableFrames - 1)) {
         ++i;

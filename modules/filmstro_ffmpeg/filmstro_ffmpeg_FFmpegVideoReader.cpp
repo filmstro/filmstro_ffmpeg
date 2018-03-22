@@ -627,7 +627,7 @@ void FFmpegVideoReader::DecoderThread::setCurrentPTS (const double pts, bool see
         return;
     }
 
-    auto read = videoFifoRead;
+    auto read = videoFifoRead.load();
     auto i=0;
 
     while ((videoFrames [(read + i) % videoFrames.size()].first < pts) && i < (availableFrames - 1)) {

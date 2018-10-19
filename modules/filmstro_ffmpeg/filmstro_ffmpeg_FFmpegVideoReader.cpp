@@ -466,16 +466,20 @@ int FFmpegVideoReader::DecoderThread::openCodecContext (AVCodecContext** decoder
 
 int FFmpegVideoReader::DecoderThread::decodeAudioPacket (AVPacket packet)
 {
-    int got_frame = 0;
     int decoded   = packet.size;
     int outputNumSamples    = 0;
 
+    int response = avcodec_send_packet(audioContext, &packet);
+    
     // decode audio frame
-    do {
-        // call decode until packet is empty
-        int ret = avcodec_decode_audio4 (audioContext, audioFrame, &got_frame, &packet);
-        if (ret < 0) {
-            DBG ("Error decoding audio frame: (Code " + String (ret) + ")");
+    while (response >= 0) {
+        response = avcodec_receive_frame(audioContext, audioFrame);
+        if (response == AVERROR(EAGAIN) || response == AVERROR_EOF) {
+            break;
+        } else if (response < 0) {
+#ifdef DEBUG_LOG_PACKETS
+            DBG("Error while receiving a frame from the decoder:" + String(av_err2str(response)));
+#endif /* DEBUG_LOG_PACKETS */
             break;
         }
 
@@ -490,16 +494,7 @@ int FFmpegVideoReader::DecoderThread::decodeAudioPacket (AVPacket packet)
              " Frame PTS: " + String (framePTS));
 #endif /* DEBUG_LOG_PACKETS */
 
-        /* Some audio decoders decode only part of the packet, and have to be
-         * called again with the remainder of the packet data.
-         * Sample: fate-suite/lossless-audio/luckynight-partial.shn
-         * Also, some decoders might over-read the packet. */
-        decoded = jmin (ret, packet.size);
-
-        packet.data += decoded;
-        packet.size -= decoded;
-
-        if (got_frame && decoded > 0 && audioFrame->extended_data != nullptr) {
+        if (audioFrame->extended_data != nullptr) {
             const int channels   = av_get_channel_layout_nb_channels (audioFrame->channel_layout);
             const int numSamples = audioFrame->nb_samples;
 
@@ -516,20 +511,28 @@ int FFmpegVideoReader::DecoderThread::decodeAudioPacket (AVPacket packet)
                 audioFifo.addToFifo ((const float **)audioFrame->extended_data, numSamples);
             }
         }
-
-    } while (got_frame && packet.size > 0);
+    }
     
     return outputNumSamples;
 }
 
 double FFmpegVideoReader::DecoderThread::decodeVideoPacket (AVPacket packet)
 {
+    int response = avcodec_send_packet(videoContext, &packet);
+
+    if (response < 0) {
+#ifdef DEBUG_LOG_PACKETS
+        DBG("Error while sending a packet to the decoder: %s" + String(av_err2str(response)));
+#endif /* DEBUG_LOG_PACKETS */
+    }
+    
     double pts_sec = 0.0;
-    if (videoContext && packet.size > 0) {
+    while (response >= 0) {
         int got_picture = 0;
         AVFrame* frame = videoFrames [videoFifoWrite].second;
 
-        if (avcodec_decode_video2 (videoContext, frame, &got_picture, &packet) > 0) {
+        response = avcodec_receive_frame(videoContext, frame);
+        if (response >= 0) {
             int64_t pts = av_frame_get_best_effort_timestamp (frame);
 
             AVRational timeBase = av_make_q (1, AV_TIME_BASE);

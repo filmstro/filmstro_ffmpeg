@@ -81,23 +81,23 @@ public:
     }
 
     /*< Push samples from an AudioBuffer into the FIFO */
-    void addToFifo (const juce::AudioBuffer<FloatType>& samples, int numSamples=-1)
+    void addToFifo (const juce::AudioBuffer<FloatType>& samples, int numSamples = -1, int sourceOffset = 0)
     {
-        const int addSamples = numSamples < 0 ? samples.getNumSamples() : numSamples;
+        const int addSamples = (numSamples < 0 ? samples.getNumSamples() : numSamples) - sourceOffset;
         jassert (getFreeSpace() >= addSamples);
-
+        
         int start1, size1, start2, size2;
         prepareToWrite (addSamples, start1, size1, start2, size2);
         if (size1 > 0)
             for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
-                buffer.copyFrom (channel, start1, samples.getReadPointer (channel), size1);
+                buffer.copyFrom (channel, start1, samples.getReadPointer (channel, sourceOffset), size1);
         if (size2 > 0)
             for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
-                buffer.copyFrom (channel, start2, samples.getReadPointer (channel, size1), size2);
+                buffer.copyFrom (channel, start2, samples.getReadPointer (channel, sourceOffset + size1), size2);
         finishedWrite (size1 + size2);
-
+        
     }
-
+    
     /*< Read samples from the FIFO into raw float arrays */
     void readFromFifo (FloatType** samples, int numSamples)
     {

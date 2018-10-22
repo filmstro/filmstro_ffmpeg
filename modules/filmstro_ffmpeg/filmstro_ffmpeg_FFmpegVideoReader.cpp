@@ -309,18 +309,19 @@ AVCodecContext* FFmpegVideoReader::getSubtitleContext () const
 // ==============================================================================
 
 FFmpegVideoReader::DecoderThread::DecoderThread (AudioBufferFIFO<float>& fifo, const int videoFifoSize)
-  : juce::Thread        ("FFmpeg decoder"),
-    audioFifo           (fifo),
-    videoFifoRead       (0),
-    videoFifoWrite      (0),
-    formatContext       (nullptr),
-    videoContext        (nullptr),
-    audioContext        (nullptr),
-    subtitleContext     (nullptr),
-    videoStreamIdx      (-1),
-    audioStreamIdx      (-1),
-    subtitleStreamIdx   (-1),
-    currentPTS          (0)
+  : juce::Thread            ("FFmpeg decoder"),
+    audioFifo               (fifo),
+    videoFifoRead           (0),
+    videoFifoWrite          (0),
+    formatContext           (nullptr),
+    videoContext            (nullptr),
+    audioContext            (nullptr),
+    subtitleContext         (nullptr),
+    audioConverterContext   (nullptr),
+    videoStreamIdx          (-1),
+    audioStreamIdx          (-1),
+    subtitleStreamIdx       (-1),
+    currentPTS              (0)
 {
     av_register_all();
 
@@ -368,8 +369,19 @@ bool FFmpegVideoReader::DecoderThread::loadMovieFile (const juce::File& inputFil
     // open the streams
     audioStreamIdx = openCodecContext (&audioContext, AVMEDIA_TYPE_AUDIO, true);
     if (isPositiveAndBelow (audioStreamIdx, static_cast<int> (formatContext->nb_streams))) {
-        audioContext->request_sample_fmt = AV_SAMPLE_FMT_FLTP;
-        //audioContext->request_channel_layout = AV_CH_LAYOUT_STEREO_DOWNMIX;
+        uint64_t channel_layout = formatContext->streams [audioStreamIdx]->codecpar->channel_layout;
+        audioConverterContext = swr_alloc_set_opts(NULL,  // we're allocating a new context
+                                                   channel_layout,  // out_ch_layout
+                                                   AV_SAMPLE_FMT_FLTP,    // out_sample_fmt
+                                                   audioContext->sample_rate,  // out_sample_rate
+                                                   channel_layout, // in_ch_layout
+                                                   audioContext->sample_fmt,   // in_sample_fmt
+                                                   audioContext->sample_rate,  // in_sample_rate
+                                                   0,                    // log_offset
+                                                   NULL);                // log_ctx
+        ret = swr_init(audioConverterContext);
+        if(ret < 0)
+            fprintf(stderr, "Error initialising audio converter: %s\n", av_err2str(ret));
     }
 
     videoStreamIdx = openCodecContext (&videoContext, AVMEDIA_TYPE_VIDEO, true);
@@ -403,6 +415,10 @@ void FFmpegVideoReader::DecoderThread::closeMovieFile ()
     if (subtitleStreamIdx >= 0) {
         avcodec_free_context (&subtitleContext);
         subtitleStreamIdx = -1;
+    }
+    if(audioConverterContext)
+    {
+        swr_free(&audioConverterContext);
     }
     avformat_close_input (&formatContext);
 }
@@ -497,7 +513,6 @@ int FFmpegVideoReader::DecoderThread::decodeAudioPacket (AVPacket packet)
         if (audioFrame->extended_data != nullptr) {
             const int channels   = av_get_channel_layout_nb_channels (audioFrame->channel_layout);
             const int numSamples = audioFrame->nb_samples;
-
             int offset = (currentPTS - framePTSsecs) * audioContext->sample_rate;
             if (offset > 100) {
                 if (offset < numSamples) {
@@ -508,7 +523,9 @@ int FFmpegVideoReader::DecoderThread::decodeAudioPacket (AVPacket packet)
             }
             else {
                 outputNumSamples = numSamples;
-                audioFifo.addToFifo ((const float **)audioFrame->extended_data, numSamples);
+                audioConvertBuffer.setSize(channels, numSamples);
+                swr_convert(audioConverterContext, (uint8_t**)audioConvertBuffer.getArrayOfWritePointers(), numSamples, (const uint8_t**)audioFrame->extended_data, numSamples);
+                audioFifo.addToFifo (audioConvertBuffer);
             }
         }
     }

@@ -523,7 +523,7 @@ int FFmpegVideoReader::DecoderThread::decodeAudioPacket (AVPacket packet)
             }
             else {
                 outputNumSamples = numSamples;
-                audioConvertBuffer.setSize(channels, numSamples);
+                audioConvertBuffer.setSize(channels, numSamples, false, false, true);
                 swr_convert(audioConverterContext, (uint8_t**)audioConvertBuffer.getArrayOfWritePointers(), numSamples, (const uint8_t**)audioFrame->extended_data, numSamples);
                 audioFifo.addToFifo (audioConvertBuffer);
             }

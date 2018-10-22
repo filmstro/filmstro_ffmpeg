@@ -513,17 +513,17 @@ int FFmpegVideoReader::DecoderThread::decodeAudioPacket (AVPacket packet)
         if (audioFrame->extended_data != nullptr) {
             const int channels   = av_get_channel_layout_nb_channels (audioFrame->channel_layout);
             const int numSamples = audioFrame->nb_samples;
+            audioConvertBuffer.setSize(channels, numSamples, false, false, true);
             int offset = (currentPTS - framePTSsecs) * audioContext->sample_rate;
             if (offset > 100) {
                 if (offset < numSamples) {
+                    swr_convert(audioConverterContext, (uint8_t**)audioConvertBuffer.getArrayOfWritePointers(), numSamples, (const uint8_t**)audioFrame->extended_data, numSamples);
                     outputNumSamples = numSamples-offset;
-                    AudioBuffer<float> subset ((float* const*)audioFrame->extended_data, channels, offset, outputNumSamples);
-                    audioFifo.addToFifo (subset);
+                    audioFifo.addToFifo(audioConvertBuffer, outputNumSamples, offset);
                 }
             }
             else {
                 outputNumSamples = numSamples;
-                audioConvertBuffer.setSize(channels, numSamples, false, false, true);
                 swr_convert(audioConverterContext, (uint8_t**)audioConvertBuffer.getArrayOfWritePointers(), numSamples, (const uint8_t**)audioFrame->extended_data, numSamples);
                 audioFifo.addToFifo (audioConvertBuffer);
             }

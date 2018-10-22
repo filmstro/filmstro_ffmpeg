@@ -159,12 +159,14 @@ public:
         AVCodecContext*     videoContext;
         AVCodecContext*     audioContext;
         AVCodecContext*     subtitleContext;
+        SwrContext*         audioConverterContext;
 
         int                 videoStreamIdx;
         int                 audioStreamIdx;
         int                 subtitleStreamIdx;
 
         AVFrame*            audioFrame;
+        juce::AudioBuffer<float>  audioConvertBuffer;
 
         std::atomic<double> currentPTS;
 

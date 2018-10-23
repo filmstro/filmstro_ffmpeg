@@ -347,6 +347,12 @@ FFmpegVideoReader::DecoderThread::~DecoderThread ()
 
 }
 
+std::string averrtostr(int errnum)
+{
+       char errstr[AV_ERROR_MAX_STRING_SIZE] = { 0 };
+       av_make_error_string(errstr, AV_ERROR_MAX_STRING_SIZE, errnum);
+       return std::string(errstr);
+}
 
 bool FFmpegVideoReader::DecoderThread::loadMovieFile (const juce::File& inputFile)
 {
@@ -381,7 +387,7 @@ bool FFmpegVideoReader::DecoderThread::loadMovieFile (const juce::File& inputFil
                                                    NULL);                // log_ctx
         ret = swr_init(audioConverterContext);
         if(ret < 0)
-            fprintf(stderr, "Error initialising audio converter: %s\n", av_err2str(ret));
+            std::cerr << "Error initialising audio converter: " << averrtostr(ret) << std::endl;
     }
 
     videoStreamIdx = openCodecContext (&videoContext, AVMEDIA_TYPE_VIDEO, true);

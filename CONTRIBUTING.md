@@ -1,8 +1,8 @@
 filmstro_ffmpeg
 ===============
 
-This JUCE wrapper for the ffMpeg library was written by Daniel Walz, begun while working 
-at Filmstro Ltd. in Brighton, uk.
+This JUCE wrapper for the ffMpeg library was written by Daniel Walz (ffAudio), 
+begun while working at Filmstro Ltd. in Brighton, UK.
 
 We welcome all contributions, suggestions and bug reports, as this is the strength of
 Open Source.

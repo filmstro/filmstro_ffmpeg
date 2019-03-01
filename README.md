@@ -9,7 +9,7 @@ This is a module to read video files and play/display it using the JUCE
 framework (juce.com). The audio will be available as a juce::AudioSource and 
 can be processed through a regular processing chain.
 
-Find the [API documentation here](https://filmstro.github.io/filmstro_ffmpeg/docs/)
+Find the [API documentation here](https://filmstro.github.io/filmstro_ffmpeg/)
 
 Dependencies
 ============
